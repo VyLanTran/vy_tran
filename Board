@@ -1,0 +1,52 @@
+import java.util.Random;
+
+public class Board {
+    private final int ROWS = 10;
+    private final int COLUMNS = 10;
+    int mines;
+    int[][] board = new int[ROWS][COLUMNS];
+    int [][] answer = new int[ROWS][COLUMNS];
+    Cell cell;
+
+    // mined: 99, unrevealed: -1, revealed: 0, 1, 2, 3, ..., 8
+
+    // Constructor 
+
+    public void setMines() {
+        // randomly set mines to cells on the answer board
+        while (mines != 0) {
+            Random rand = new Random();
+            int row = rand.nextInt(ROWS);
+            int col = rand.nextInt(COLUMNS);
+            if (answer[row][col] != 99) {
+                answer[row][col] = 99;
+                mines--;
+            }
+        }
+    }
+
+    public void setNumbers() {
+        // set number to each cell that is not mined, this number shows the number of mined neighbors
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if (answer[i][j] != 99) {
+
+                }
+            }
+        }
+    }
+
+    public String position(Cell cell) {
+        // there are 3 types of position on a board: corner, edge, middle
+        if ((cell.getRow() == 0 && cell.getCol() == 0) || (cell.getRow() == 0 && cell.getCol() == COLUMNS-1) ||
+            (cell.getRow() == ROWS-1 && cell.getCol() == 0) || (cell.getRow() == ROWS-1 && cell.getCol() == COLUMNS-1)){
+            return "corner";
+        }
+        else if (cell.getRow() == 0 || cell.getRow() == ROWS - 1 ||
+                 cell.getCol() == 0 || cell.getCol() == COLUMNS - 1) {
+            return "edge";
+        }
+        else
+            return "middle";
+    }
+}
