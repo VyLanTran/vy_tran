@@ -10,7 +10,7 @@ public class Board {
 
     // mined: 99, unrevealed: -1, revealed: 0, 1, 2, 3, ..., 8
 
-    // Constructor 
+    // Constructor
 
     public void setMines() {
         // randomly set mines to cells on the answer board
@@ -30,7 +30,16 @@ public class Board {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 if (answer[i][j] != 99) {
-
+                    Cell cell = new Cell(i, j);
+                    if (position(cell) == "corner") {
+                        
+                    }
+                    else if (position(cell) == "edge") {
+                        
+                    }
+                    else {
+                        
+                    }
                 }
             }
         }
