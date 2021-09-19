@@ -58,7 +58,8 @@ public class Board implements ActionListener {
                 buttons[index].setActionCommand(value.toString());
 
                 button_panel.add(buttons[index]);
-                buttons[i].setFocusable(false);
+                buttons[index].setFocusable(false);
+                buttons[index].addActionListener(this);
                 index = index + 1;
             }
         }
