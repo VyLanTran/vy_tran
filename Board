@@ -1,24 +1,23 @@
 package Minesweeper;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class Board {
     private int rows;
     private int columns;
     int mines;
-    private int[][] board;
+    private int[][] show;
     private int[][] answer;
     Cell cell;
 
-    // mined: 99, unrevealed: -1, revealed: 0, 1, 2, 3, ..., 8
+    // mined: 99, unrevealed: -1 (only for board), revealed: 0, 1, 2, 3, ..., 8
 
     // Constructor
     public Board(int rows, int columns) {
         this.rows= rows;
         this.columns = columns;
         int mines = (int) Math.round(rows * columns * 0.1);
-        board = new int[rows][columns];
+        show = new int[rows][columns];
         answer = new int[rows][columns];
     }
 
@@ -106,4 +105,3 @@ public class Board {
     }
 
 }
-
