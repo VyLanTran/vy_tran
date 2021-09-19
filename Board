@@ -13,6 +13,7 @@ public class Board implements ActionListener {
     private int[][] grid;
     Cell cell;
     int total = rows * columns;
+    int unrevealed = total;
 
     JFrame frame = new JFrame();
     JPanel title_panel = new JPanel();
@@ -31,11 +32,11 @@ public class Board implements ActionListener {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 600);
-        //frame.getContentPane().setBackground(new Color(50, 50, 50));
+        frame.getContentPane().setBackground(new Color(50, 50, 50));
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
 
-        //textfield.setBackground(new Color(25, 25, 25));
+        textfield.setBackground(new Color(25, 25, 25));
         textfield.setForeground(new Color(25, 255, 0));
         textfield.setFont(new Font("Ink Free", Font.BOLD, 75));
         textfield.setHorizontalAlignment(JLabel.CENTER);
@@ -154,6 +155,23 @@ public class Board implements ActionListener {
         }
     }
 
+    public void gameState(String s, int unrevealed) {
+        if (s.equals("99")) {
+            textfield.setText("GAME OVER");
+            for (int i = 0; i < total; i++) {
+                buttons[i].setEnabled(false);
+            }
+        } else {
+            if (unrevealed != 0) {
+            } else {
+                textfield.setText("WIN");
+                for (int i = 0; i < total; i++) {
+                    buttons[i].setEnabled(false);
+                }
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         for (int i = 0; i < total; i++) {
@@ -161,6 +179,8 @@ public class Board implements ActionListener {
                 if (buttons[i].getText() == "") {
                     String value = buttons[i].getActionCommand();
                     buttons[i].setText(value);
+                    unrevealed--;
+                    gameState(value, unrevealed);
                 }
             }
         }
