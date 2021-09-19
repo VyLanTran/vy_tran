@@ -30,12 +30,12 @@ public class Board implements ActionListener {
         grid = new int[rows][columns];
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 900);
-        frame.getContentPane().setBackground(new Color(50, 50, 50));
+        frame.setSize(500, 600);
+        //frame.getContentPane().setBackground(new Color(50, 50, 50));
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
 
-        textfield.setBackground(new Color(25, 25, 25));
+        //textfield.setBackground(new Color(25, 25, 25));
         textfield.setForeground(new Color(25, 255, 0));
         textfield.setFont(new Font("Ink Free", Font.BOLD, 75));
         textfield.setHorizontalAlignment(JLabel.CENTER);
@@ -43,7 +43,7 @@ public class Board implements ActionListener {
         textfield.setOpaque(true);
 
         title_panel.setLayout(new BorderLayout());
-        title_panel.setBounds(0, 0, 800, 100);
+        title_panel.setBounds(0, 0, 500, 100);
 
         button_panel.setLayout(new GridLayout(rows, columns));
         button_panel.setBackground(new Color(150, 150, 150));
@@ -58,6 +58,7 @@ public class Board implements ActionListener {
                 buttons[index].setActionCommand(value.toString());
 
                 button_panel.add(buttons[index]);
+                buttons[i].setFont(new Font(null));
                 buttons[index].setFocusable(false);
                 buttons[index].addActionListener(this);
                 index = index + 1;
