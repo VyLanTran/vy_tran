@@ -17,13 +17,13 @@ public class Board {
     public Board(int rows, int columns) {
         this.rows= rows;
         this.columns = columns;
+        int mines = (int) Math.round(rows * columns * 0.1);
         board = new int[rows][columns];
         answer = new int[rows][columns];
-        int mines = (int) Math.round(rows * columns * 0.1);
     }
 
     // randomly set mines to cells on the answer board
-    public void setMines() {
+    public int[][] setMines() {
         while (mines > 0) {
             Random rand = new Random();
             int row = rand.nextInt(rows);
@@ -33,11 +33,13 @@ public class Board {
                 mines--;
             }
         }
+        return answer;
     }
 
     // set number to each cell that is not mined, this number shows the number of mined neighbors (this is revealed on
     // answer board)
-    public void setNumbers() {
+    public int[][] setNumbers() {
+        answer = setMines();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (answer[i][j] != 99) {
@@ -53,6 +55,7 @@ public class Board {
                 }
             }
         }
+        return answer;
     }
 
     public int[] position(Cell cell) {
@@ -91,8 +94,8 @@ public class Board {
         return position;
     }
 
-    /*public void showAnswer(Board board) {
-        board.setMine();
+    public void showAnswer() {
+        answer = setNumbers();
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < rows; j++) {
@@ -100,6 +103,7 @@ public class Board {
             }
             System.out.println();
         }
-    }*/
+    }
 
 }
+
