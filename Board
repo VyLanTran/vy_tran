@@ -4,23 +4,30 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Board {
-    private static final int ROWS = 4;
-    private static final int COLUMNS = 4;
-    int mines = 6;
-    int[][] board = new int[ROWS][COLUMNS];
-    static int[][] answer = new int[ROWS][COLUMNS];
+    private int rows;
+    private int columns;
+    int mines;
+    private int[][] board;
+    private int[][] answer;
     Cell cell;
 
     // mined: 99, unrevealed: -1, revealed: 0, 1, 2, 3, ..., 8
 
     // Constructor
+    public Board(int rows, int columns) {
+        this.rows= rows;
+        this.columns = columns;
+        board = new int[rows][columns];
+        answer = new int[rows][columns];
+        int mines = (int) Math.round(rows * columns * 0.1);
+    }
 
     // randomly set mines to cells on the answer board
     public void setMines() {
         while (mines > 0) {
             Random rand = new Random();
-            int row = rand.nextInt(ROWS);
-            int col = rand.nextInt(COLUMNS);
+            int row = rand.nextInt(rows);
+            int col = rand.nextInt(columns);
             if (answer[row][col] != 99) {
                 answer[row][col] = 99;
                 mines--;
@@ -31,8 +38,8 @@ public class Board {
     // set number to each cell that is not mined, this number shows the number of mined neighbors (this is revealed on
     // answer board)
     public void setNumbers() {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 if (answer[i][j] != 99) {
                     cell = new Cell(i, j);
                     int[] position = position(cell);
@@ -71,25 +78,28 @@ public class Board {
         if (i - 1 < 0) {r_start = i;}
         else {r_start = i - 1;}
 
-        if (i + 1 == ROWS) {r_stop = i;}
+        if (i + 1 == rows) {r_stop = i;}
         else {r_stop = i + 1;}
 
         if (j - 1 < 0) {c_start = j;}
         else {c_start = j+1;}
 
-        if (j + 1 == COLUMNS) {c_stop = j;}
+        if (j + 1 == columns) {c_stop = j;}
         else {c_stop = j + 1;}
 
         int[] position = {r_start, r_stop, c_start, c_stop};
         return position;
     }
 
-    public static void main(String args[]) {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
+    /*public void showAnswer(Board board) {
+        board.setMine();
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < rows; j++) {
                 System.out.print(answer[i][j] + " ");
             }
             System.out.println();
         }
-    }
+    }*/
+
 }
