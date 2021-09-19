@@ -157,7 +157,8 @@ public class Board implements ActionListener {
         for (int i = 0; i < total; i++) {
             if (e.getSource() == buttons[i]) {
                 if (buttons[i].getText() == "") {
-                    
+                    String value = buttons[i].getActionCommand();
+                    buttons[i].setText(value);
                 }
             }
         }
