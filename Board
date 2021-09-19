@@ -7,8 +7,8 @@ import java.util.*;
 import javax.swing.*;
 
 public class Board implements ActionListener {
-    private int rows;
-    private int columns;
+    private int rows = 10;
+    private int columns = 10;
     int mines;
     private int[][] grid;
     Cell cell;
@@ -23,9 +23,9 @@ public class Board implements ActionListener {
     // mined: 99, unrevealed: -1 (only for board), revealed: 0, 1, 2, 3, ..., 8
 
     // Constructor
-    public Board(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+    public Board() {
+        //this.rows = rows;
+        //this.columns = columns;
         int mines = (int) Math.round(total * 0.1);
         grid = new int[rows][columns];
 
