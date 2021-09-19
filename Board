@@ -161,9 +161,11 @@ public class Board implements ActionListener {
             for (int i = 0; i < total; i++) {
                 buttons[i].setEnabled(false);
             }
-        } else {
+        } 
+        else {
             if (unrevealed != 0) {
-            } else {
+            } 
+            else {
                 textfield.setText("WIN");
                 for (int i = 0; i < total; i++) {
                     buttons[i].setEnabled(false);
