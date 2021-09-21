@@ -7,13 +7,12 @@ import java.util.*;
 import javax.swing.*;
 
 public class Board implements ActionListener {
-    private int rows = 10;
-    private int columns = 10;
-    int mines;
+    private int rows;
+    private int columns;
+    private int total;
+    private int mines;
     private int[][] grid;
-    Cell cell;
-    int total = rows * columns;
-    int unrevealed = total;
+    private int unrevealed;
 
     JFrame frame = new JFrame();
     JPanel title_panel = new JPanel();
@@ -24,11 +23,13 @@ public class Board implements ActionListener {
     // mined: 99, unrevealed: -1 (only for board), revealed: 0, 1, 2, 3, ..., 8
 
     // Constructor
-    public Board() {
-        //this.rows = rows;
-        //this.columns = columns;
-        int mines = (int) Math.round(total * 0.1);
+    public Board(int rows, int columns) {
+        this.rows = rows;
+        this.columns = columns;
+        total = rows * columns;
+        mines = (int) Math.round(total * 0.15);
         grid = new int[rows][columns];
+
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 600);
@@ -70,6 +71,7 @@ public class Board implements ActionListener {
         frame.add(title_panel, BorderLayout.NORTH);
         frame.add(button_panel);
 
+
     }
 
     // randomly set mines to cells on the answer board
@@ -93,8 +95,7 @@ public class Board implements ActionListener {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (grid[i][j] != 99) {
-                    cell = new Cell(i, j);
-                    int[] position = position(cell);
+                    int[] position = position(i, j);
                     int minedNeighbors = 0;
                     for (int x = position[0]; x <= position[1]; x++) {
                         for (int y = position[2]; y <= position[3]; y++) {
@@ -108,34 +109,18 @@ public class Board implements ActionListener {
         return grid;
     }
 
-    public int[] position(Cell cell) {
-        /*
-        // there are 3 types of position on a board: corner, edge, middle
-        if ((cell.getRow() == 0 && cell.getCol() == 0) || (cell.getRow() == 0 && cell.getCol() == COLUMNS-1) ||
-            (cell.getRow() == ROWS-1 && cell.getCol() == 0) || (cell.getRow() == ROWS-1 && cell.getCol() == COLUMNS-1)){
-            return "corner";
-        }
-        else if (cell.getRow() == 0 || cell.getRow() == ROWS - 1 ||
-                 cell.getCol() == 0 || cell.getCol() == COLUMNS - 1) {
-            return "edge";
-        }
-        else
-            return "middle";
+    public int[] position(int i, int j) {
 
-         */
-
-        int i = cell.getRow();
-        int j = cell.getCol();
         int r_start, r_stop, c_start, c_stop;
 
-        if (i - 1 < 0) {r_start = i;}
+        if (i == 0) {r_start = 0;}
         else {r_start = i - 1;}
 
         if (i + 1 == rows) {r_stop = i;}
         else {r_stop = i + 1;}
 
-        if (j - 1 < 0) {c_start = j;}
-        else {c_start = j+1;}
+        if (j == 0) {c_start = 0;}
+        else {c_start = j - 1;}
 
         if (j + 1 == columns) {c_stop = j;}
         else {c_stop = j + 1;}
@@ -148,8 +133,12 @@ public class Board implements ActionListener {
         grid = setNumbers();
 
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < rows; j++) {
-                System.out.print(grid[i][j] + " ");
+            for (int j = 0; j < columns; j++) {
+                Integer n = grid[i][j];
+                int space = 4 - n.toString().length();
+                String s = "";
+                for (int k = 0; k < space; k++) { s = s + " "; }
+                System.out.print(grid[i][j] + s);
             }
             System.out.println();
         }
@@ -161,10 +150,10 @@ public class Board implements ActionListener {
             for (int i = 0; i < total; i++) {
                 buttons[i].setEnabled(false);
             }
-        } 
+        }
         else {
             if (unrevealed != 0) {
-            } 
+            }
             else {
                 textfield.setText("WIN");
                 for (int i = 0; i < total; i++) {
