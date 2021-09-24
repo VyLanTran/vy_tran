@@ -2,7 +2,8 @@ package Minesweeper;
 
 public class Game {
     public static void main(String args[]) {
-        Board board = new Board(10, 10);
-        //board.showAnswer();
+        Board board = new Board(4, 4);
+        board.paint();
+        board.showAnswer();
     }
 }
