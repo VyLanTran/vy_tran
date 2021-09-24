@@ -38,6 +38,7 @@ public class Board implements ActionListener {
     public void paint() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 600);
+        frame.setResizable(false);
         frame.getContentPane().setBackground(new Color(50, 50, 50));
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
@@ -176,6 +177,8 @@ public class Board implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         for (int i = 0; i < total; i++) {
             if (e.getSource() == buttons[i] && buttons[i].getText() == "") {
+                buttons[i].setEnabled(false);
+                buttons[i].setOpen(true);
                 Integer value = buttons[i].getValue();
                 if (value == 99) {
                     buttons[i].setBackground(new Color(255, 0, 0));
@@ -186,7 +189,7 @@ public class Board implements ActionListener {
                 else if (value == 0) {
                     buttons[i].setBackground(new Color(51, 153, 255));
                     buttons[i].setText("");
-                    //revealBlank(buttons[i].getX(), buttons[i].getY());
+                    revealBlank(buttons[i].getX(), buttons[i].getY(), setNumbers());
                     open_not_mines ++;
                 }
                 else {
@@ -202,19 +205,23 @@ public class Board implements ActionListener {
     }
 
     // Add images: flag, mines
-/*
-    public void revealBlank(int x, int y) {
-        int[] position = position(x, y);
-        for (int a = position[0]; a <= position[1]; a++) {
-            for (int b = position[2]; b <= position[3]; b++) {
-                Button button = new Button(a, b);
-                if (button.getActionCommand() == "") {
-                    revealBlank();
-                }
+
+    //*** for a Button(i, j) in buttons: index = columns * i + j
+
+    public void revealBlank(int i, int j, int[][] grid) {
+        int[][] dirs = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+        for (int[] d : dirs) {
+            int newI = i + d[0];
+            int newJ = j + d[1];
+            if (newI >=0 && newI < rows && newJ >= 0 && newJ < columns && grid[newI][newJ] == 0) {
+                int index = columns * i + j;
+                    buttons[index].setBackground(new Color(51, 153, 255));
+                    buttons[index].setText("");
+                    //buttons[index].setEnabled(false);
+                    //buttons[index].setOpen(true);
+                    revealBlank(newI, newJ, grid);
             }
         }
     }
-
- */
 
 }
