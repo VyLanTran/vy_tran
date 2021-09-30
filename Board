@@ -1,12 +1,15 @@
-package Minesweeper;
+package NewMineSweeper;
 
-import java.util.Random;
-import java.awt.*;
-import java.awt.event.*;
-//import java.util.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Random;
 
-public class Board implements ActionListener {
+import static java.lang.Math.floor;
+import static java.lang.Math.round;
+
+public class Board extends JPanel {
     private int rows;
     private int columns;
     private int total;
@@ -14,71 +17,85 @@ public class Board implements ActionListener {
     private int[][] grid;
     private int open_not_mines;
     private int all_open;
+    private Cell[][] matrix;
+    private int w;
+    private int h;
 
-    JFrame frame = new JFrame();
-    JPanel title_panel = new JPanel();
-    JPanel button_panel = new JPanel();
-    JLabel textfield = new JLabel();
-    Button[] buttons;
-
-    // mined: 99, unrevealed: -1 (only for board), revealed: 0, 1, 2, 3, ..., 8
-
-    // Constructor
     public Board(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
         this.total = rows * columns;
-        mines = (int) Math.round(total * 0.15);
+        mines = (int) round(total * 0.15);
         grid = new int[rows][columns];
-        buttons = new Button[total];
         open_not_mines = 0;
         all_open = total - mines;
+        matrix = new Cell[rows][columns];
+
+        w = getWidth() / columns;
+        h = getHeight() / rows;
+
+        this.createBoard();
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                int x = e.getX();
+                int y = e.getY();
+
+                //matrix = attach_value(); // after this, each element of matrix is attached with a value
+
+                int w = getWidth() / columns;
+                int h = getHeight() / rows;
+
+                int row_index = (int) (floor(y / h));
+                int col_index = (int) (floor(x / w));
+
+                Integer value = grid[row_index][col_index];
+                matrix[row_index][col_index].setValue(value.toString());
+                repaint();
+
+            }
+        });
     }
 
-    public void paint() {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 600);
-        frame.setResizable(false);
-        frame.getContentPane().setBackground(new Color(50, 50, 50));
-        frame.setLayout(new BorderLayout());
-        frame.setVisible(true);
+    private void createBoard() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                Cell cell = new Cell();
+                matrix[i][j] = cell;
+            }
+        }
+    }
 
-        textfield.setBackground(new Color(25, 25, 25));
-        textfield.setForeground(new Color(25, 255, 0));
-        textfield.setFont(new Font("Ink Free", Font.BOLD, 75));
-        textfield.setHorizontalAlignment(JLabel.CENTER);
-        textfield.setText("Minesweeper");
-        textfield.setOpaque(true);
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
 
-        title_panel.setLayout(new BorderLayout());
-        title_panel.setBounds(0, 0, 500, 100);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                int w = getWidth() / columns;
+                int h = getHeight() / rows;
 
-        button_panel.setLayout(new GridLayout(rows, columns));
-        //button_panel.setBackground(new Color());
+                int x = j * w;
+                int y = i * h;
 
-        int index = 0;
-        grid = setNumbers();
+                // Draw the matrix again each time it is called
+                Cell cell = matrix[i][j];
+                cell.setX(x);
+                cell.setY(y);
 
-        while (index < total) {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < columns; j++) {
-                    int value = grid[i][j];
-                    buttons[index] = new Button(i, j, value);
+                g2d.setColor(Color.BLACK);
+                g2d.drawRect(x, y, w, h);
 
-                    button_panel.add(buttons[index]);
-                    buttons[index].setFont(new Font("MV Boli", Font.BOLD, 50));
-                    buttons[index].setFocusable(false);
-                    buttons[index].addActionListener(this);
-                    index = index + 1;
+                String value = cell.getValue();
+                if (value != null) {
+                    g2d.setStroke(new BasicStroke(1.0f));
+                    g.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+                    g2d.drawString(value, x + w / 2, y + h / 2);
                 }
             }
         }
-
-        title_panel.add(textfield);
-        frame.add(title_panel, BorderLayout.NORTH);
-        frame.add(button_panel);
     }
-
 
     // randomly set mines on the answer board
     public int[][] setMines() {
@@ -141,8 +158,6 @@ public class Board implements ActionListener {
     public void showAnswer() {
         grid = setNumbers();
 
-        System.out.println(all_open);
-
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 Integer n = grid[i][j];
@@ -156,7 +171,7 @@ public class Board implements ActionListener {
     }
 
     // Determine Win or Lose or Not Finished
-    public void gameState(int value, int open_not_mines) {
+    /*public void gameState(int value, int open_not_mines) {
         if (value == 99) {
             for (int i = 0; i < total; i++) {
                 buttons[i].setEnabled(false);
@@ -170,58 +185,6 @@ public class Board implements ActionListener {
             }
             textfield.setText("WIN");
         }
-    }
-
-    // What respond to a click
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        for (int i = 0; i < total; i++) {
-            if (e.getSource() == buttons[i] && buttons[i].getText() == "") {
-                buttons[i].setEnabled(false);
-                buttons[i].setOpen(true);
-                Integer value = buttons[i].getValue();
-                if (value == 99) {
-                    buttons[i].setBackground(new Color(255, 0, 0));
-                    buttons[i].setText("X");
-                    gameState(value, open_not_mines);
-                    break;
-                }
-                else if (value == 0) {
-                    buttons[i].setBackground(new Color(51, 153, 255));
-                    buttons[i].setText("");
-                    revealBlank(buttons[i].getX(), buttons[i].getY(), setNumbers());
-                    open_not_mines ++;
-                }
-                else {
-                    buttons[i].setBackground(new Color(51, 153, 255));
-                    buttons[i].setText(value.toString());
-                    open_not_mines ++;
-                }
-
-                if (open_not_mines == all_open) {gameState(value, open_not_mines);}
-
-            }
-        }
-    }
-
-    // Add images: flag, mines
-
-    //*** for a Button(i, j) in buttons: index = columns * i + j
-
-    public void revealBlank(int i, int j, int[][] grid) {
-        int[][] dirs = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
-        for (int[] d : dirs) {
-            int newI = i + d[0];
-            int newJ = j + d[1];
-            if (newI >=0 && newI < rows && newJ >= 0 && newJ < columns && grid[newI][newJ] == 0) {
-                int index = columns * i + j;
-                    buttons[index].setBackground(new Color(51, 153, 255));
-                    buttons[index].setText("");
-                    //buttons[index].setEnabled(false);
-                    //buttons[index].setOpen(true);
-                    revealBlank(newI, newJ, grid);
-            }
-        }
-    }
+    }*/
 
 }
