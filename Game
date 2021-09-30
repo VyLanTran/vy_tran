@@ -5,15 +5,9 @@ import java.awt.*;
 
 public class Game {
     public static void main(String args[]) {
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setVisible(true);
-
         JPanel panel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(boxLayout);
-        panel.setBackground(Color.WHITE);
 
         JPanel top_panel = new JPanel();
         top_panel.setLayout(new BorderLayout());
@@ -21,26 +15,30 @@ public class Game {
 
         Board board = new Board(5, 5);
         board.setPreferredSize(new Dimension(500, 500));
+        panel.add(board);
 
         JLabel textfield = new JLabel();
         textfield.setBackground(new Color(13, 33, 54));
         textfield.setForeground(new Color(255, 255, 255));
         textfield.setHorizontalAlignment(JLabel.CENTER);
         textfield.setFont(new Font("MVBoli", Font.PLAIN,60));
-        textfield.setHorizontalAlignment(JLabel.CENTER);
         textfield.setText("MINESWEEPER");
         textfield.setOpaque(true);
 
-//        JButton restart_button = new JButton("Restart");
-//        restart_button.setHorizontalAlignment(JButton.CENTER);
-
         top_panel.add(textfield);
-        //top_panel.add(restart_button);
         panel.add(top_panel);
-        //panel.add(restart_button);
         panel.add(board);
+
+        /*JButton restart_button = new JButton("Restart");
+        restart_button.setHorizontalAlignment(JButton.CENTER);*/
+
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+
         frame.add(panel, BorderLayout.NORTH);
         frame.pack();
+        frame.setVisible(true);
 
         board.showAnswer();
     }
