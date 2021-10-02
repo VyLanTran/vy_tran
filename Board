@@ -42,6 +42,8 @@ public class Board extends JPanel {
                 int x = e.getX();
                 int y = e.getY();
 
+                // ???????????????????????????? grid = setNumbers();
+
                 int w = getWidth() / columns;
                 int h = getHeight() / rows;
 
@@ -50,15 +52,30 @@ public class Board extends JPanel {
 
                 Cell cell = matrix[row_index][col_index];
                 if (cell.isReveal() == false) {
+
                     Integer value = grid[row_index][col_index];
                     cell.setValue(value.toString());
                     cell.setReveal(true);
-                    repaint();
+                    if (!value.toString().equals("0")) {repaint();}
+                    else {
+                        extendBlank(row_index, col_index);
+                    }
+
 
                     String result = gameState(row_index, col_index);
                     if (result == "Lose") {
                         System.out.println("GAME OVER");
-                        // Open all cells with mines, red, end game
+                        // Open all other mines and end game
+                        for (int i = 0; i < rows; i++) {
+                            for (int j = 0; j < columns; j++) {
+                                Integer v = grid[i][j];
+                                if (v == 99) {
+                                    Cell c = matrix[i][j];
+                                    c.setValue(v.toString());
+                                    repaint();
+                                }
+                            }
+                        }
                         disableOpen();
                     }
                     if (result == "Win"){
@@ -224,22 +241,39 @@ public class Board extends JPanel {
         return open_not_mines == all_open;
     }
 
-    public void count() {
-        int open_not_mines = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                Cell cell = matrix[i][j];
-                if (cell.isReveal() == true && cell.getValue() != "99") {open_not_mines++;}
-            }
-        }
-        System.out.println(open_not_mines);
-        System.out.println(all_open);
-    }
-
     public void disableOpen() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 matrix[i][j].setReveal(true);
+            }
+        }
+    }
+
+    public void extendBlank(int i, int j) {
+        int[][] dirs = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+        for (int[] d : dirs) {
+            int newI = i + d[0];
+            int newJ = j + d[1];
+            if (newI >=0 && newI < rows && newJ >= 0 && newJ < columns &&
+                grid[newI][newJ] == 0 && matrix[newI][newJ].isReveal() == false) {
+                Cell cell = matrix[newI][newJ];
+                cell.setValue("0");
+                cell.setReveal(true);
+                repaint();
+                for (int[] other_d : dirs) {
+                    int next_newI = newI + other_d[0];
+                    int next_newJ = newJ + other_d[1];
+                    if (next_newI >=0 && next_newI < rows && next_newJ >= 0 && next_newJ < columns &&
+                            grid[next_newI][next_newJ] != 0 && grid[next_newI][next_newJ] != 99 &&
+                            matrix[next_newI][next_newJ].isReveal() == false) {
+                        Cell other_cell = matrix[next_newI][next_newJ];
+                        Integer value = grid[next_newI][next_newJ];
+                        other_cell.setValue(value.toString());
+                        other_cell.setReveal(true);
+                        repaint();
+                    }
+                }
+                extendBlank(newI, newJ);
             }
         }
     }
