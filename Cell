@@ -4,6 +4,7 @@ public class Cell {
     private int x;
     private int y;
     private String value;
+    boolean reveal = false;
 
     public Cell() {
 
@@ -31,5 +32,13 @@ public class Cell {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isReveal() {
+        return reveal;
+    }
+
+    public void setReveal(boolean reveal) {
+        this.reveal = reveal;
     }
 }
