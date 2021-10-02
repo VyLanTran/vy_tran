@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Game {
+
     public static void main(String args[]) {
         JPanel panel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
@@ -13,7 +14,7 @@ public class Game {
         top_panel.setLayout(new BorderLayout());
         top_panel.setBounds(0, 0, 500, 100);
 
-        Board board = new Board(5, 5);
+        Board board = new Board(3, 3);
         board.setPreferredSize(new Dimension(500, 500));
         panel.add(board);
 
