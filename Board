@@ -10,6 +10,7 @@ import static java.lang.Math.floor;
 import static java.lang.Math.round;
 
 public class Board extends JPanel {
+    //ADD BUTTON, FLAG, UNFLAG, ICON
     private int rows;
     private int columns;
     private int total;
@@ -51,36 +52,50 @@ public class Board extends JPanel {
                 int col_index = (int) (floor(x / w));
 
                 Cell cell = matrix[row_index][col_index];
-                if (cell.isReveal() == false) {
+                Integer value = grid[row_index][col_index];
+                String str_value = value.toString();
+                cell.setValue(str_value);
 
-                    Integer value = grid[row_index][col_index];
-                    cell.setValue(value.toString());
-                    cell.setReveal(true);
-                    if (!value.toString().equals("0")) {repaint();}
-                    else {
-                        extendBlank(row_index, col_index);
-                    }
-
-
-                    String result = gameState(row_index, col_index);
-                    if (result == "Lose") {
-                        System.out.println("GAME OVER");
-                        // Open all other mines and end game
-                        for (int i = 0; i < rows; i++) {
-                            for (int j = 0; j < columns; j++) {
-                                Integer v = grid[i][j];
-                                if (v == 99) {
-                                    Cell c = matrix[i][j];
-                                    c.setValue(v.toString());
-                                    repaint();
-                                }
-                            }
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    if (cell.isReveal() == false) {
+                        cell.setReveal(true);
+                        if (!value.toString().equals("0")) {repaint();}
+                        else {
+                            extendBlank(row_index, col_index);
                         }
-                        disableOpen();
+
+
+                        String result = gameState(row_index, col_index);
+                        if (result == "Lose") {
+                            System.out.println("GAME OVER");
+                            // Open all other mines and end game
+                            revealAllMines();
+                            disableOpen();
+                        }
+                        if (result == "Win"){
+                            System.out.println("WIN");
+                            revealAllMines();
+                            disableOpen();
+                        }
                     }
-                    if (result == "Win"){
-                        System.out.println("WIN");
-                        disableOpen();
+                }
+
+                else if (SwingUtilities.isRightMouseButton(e)) {
+                    if (cell.isReveal() == false) {
+                        if (cell.isFlag() == false) {
+                            // Set the flag
+                            cell.setFlag(true);
+                            cell.setValue("Temporarily hidden");
+                            repaint();
+                        }
+                        else {
+                            // remove the flag
+                            cell.setFlag(false);
+                            cell.setValue("Temporarily hidden");
+                            repaint();
+                            //cell.setValue(str_value); ??????????? why this line (if uncomment) also affect repaint
+                            //though it's after the call of repaint?????????????
+                        }
                     }
                 }
             }
@@ -117,7 +132,7 @@ public class Board extends JPanel {
 
                 String value = cell.getValue();
                 if (value != null) {
-                    if (value.equals("99")) {
+                    if (cell.isFlag() == false && value.equals("99")) {
                         g2d.setColor(new Color(255, 0, 0));
                         g2d.fillRect(x, y, w, h);
                         g2d.setColor(Color.BLACK);
@@ -125,8 +140,12 @@ public class Board extends JPanel {
                         g2d.drawLine(x, y, x, y + h);   // Left border
                         g2d.drawLine(x, y + h, x + w, y + h);   // Bottom border
                         g2d.drawLine(x + w, y + h, x + w, y);   // Right border
+
+                        g2d.setStroke(new BasicStroke(1.0f));
+                        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+                        g2d.drawString(value, x + w / 2, y + h / 2);
                     }
-                    else {
+                    else if (cell.isFlag() == false && !value.equals("99") && !value.equals("Temporarily hidden")) {
                         g2d.setColor(new Color(0, 255, 0));
                         g2d.fillRect(x, y, w, h);
                         g2d.setColor(Color.BLACK);
@@ -134,11 +153,33 @@ public class Board extends JPanel {
                         g2d.drawLine(x, y, x, y + h);   // Left border
                         g2d.drawLine(x, y + h, x + w, y + h);   // Bottom border
                         g2d.drawLine(x + w, y + h, x + w, y);   // Right border
-                    }
 
-                    g2d.setStroke(new BasicStroke(1.0f));
-                    g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
-                    g2d.drawString(value, x + w / 2, y + h / 2);
+                        g2d.setStroke(new BasicStroke(1.0f));
+                        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+                        g2d.drawString(value, x + w / 2, y + h / 2);
+                    }
+                    else if (cell.isFlag() == true) {
+                        g2d.setColor(new Color(255, 187, 0));
+                        g2d.fillRect(x, y, w, h);
+                        g2d.setColor(Color.BLACK);
+                        g2d.drawLine(x, y, x + w, y);   // Top border
+                        g2d.drawLine(x, y, x, y + h);   // Left border
+                        g2d.drawLine(x, y + h, x + w, y + h);   // Bottom border
+                        g2d.drawLine(x + w, y + h, x + w, y);   // Right border
+
+                        g2d.setStroke(new BasicStroke(1.0f));
+                        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+                        g2d.drawString("F", x + w / 2, y + h / 2);
+                    }
+                    else if (cell.isFlag() == false && value.equals("Temporarily hidden")) {
+                        g2d.setColor(new Color(255, 255, 255));
+                        g2d.fillRect(x, y, w, h);
+                        g2d.setColor(Color.BLACK);
+                        g2d.drawLine(x, y, x + w, y);   // Top border
+                        g2d.drawLine(x, y, x, y + h);   // Left border
+                        g2d.drawLine(x, y + h, x + w, y + h);   // Bottom border
+                        g2d.drawLine(x + w, y + h, x + w, y);   // Right border
+                    }
                 }
             }
         }
@@ -280,5 +321,18 @@ public class Board extends JPanel {
 
     public int getMines() {
         return mines;
+    }
+
+    public void revealAllMines() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                Integer v = grid[i][j];
+                if (v == 99) {
+                    Cell c = matrix[i][j];
+                    c.setValue(v.toString());
+                    repaint();
+                }
+            }
+        }
     }
 }
