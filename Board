@@ -221,10 +221,10 @@ public class Board extends JPanel {
     public String gameState(int r_index, int c_index) {
         // Open a mine - Lose
         if (grid[r_index][c_index] == 99)
-            {return "Lose";}
+        {return "Lose";}
         // Open all - Win
         else if (isFull() == true)
-            {return "Win";}
+        {return "Win";}
         else {
             return "Undecided";
         }
@@ -255,7 +255,7 @@ public class Board extends JPanel {
             int newI = i + d[0];
             int newJ = j + d[1];
             if (newI >=0 && newI < rows && newJ >= 0 && newJ < columns &&
-                grid[newI][newJ] == 0 && matrix[newI][newJ].isReveal() == false) {
+                    grid[newI][newJ] == 0 && matrix[newI][newJ].isReveal() == false) {
                 Cell cell = matrix[newI][newJ];
                 cell.setValue("0");
                 cell.setReveal(true);
@@ -276,5 +276,9 @@ public class Board extends JPanel {
                 extendBlank(newI, newJ);
             }
         }
+    }
+
+    public int getMines() {
+        return mines;
     }
 }
