@@ -42,7 +42,7 @@ public class Game {
         buttons_panel.setPreferredSize(new Dimension(600, 50));
         buttons_panel.setBackground(new Color(52, 186, 235));
 
-        board = new Board(10, 10);
+        board = new Board(4, 4);
         board.setPreferredSize(new Dimension(600, 600));
 
         textfield = new JLabel();
@@ -61,7 +61,6 @@ public class Game {
 
         // set Mines value ?????????
         countMines = new JLabel();
-        //countMines.setLocation(0, 100);
         countMines.setPreferredSize(new Dimension(80, 50));
         countMines.setBackground(Color.WHITE);
         countMines.setOpaque(true);
