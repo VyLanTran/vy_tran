@@ -57,7 +57,7 @@ public class Board extends JPanel {
                 cell.setValue(str_value);
 
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    if (cell.isReveal() == false) {
+                    if (cell.isReveal() == false && cell.isFlag() == false) {
                         cell.setReveal(true);
                         if (!value.toString().equals("0")) {repaint();}
                         else {
