@@ -10,7 +10,7 @@ import static java.lang.Math.floor;
 import static java.lang.Math.round;
 
 public class Board extends JPanel {
-    //ADD BUTTON, FLAG, UNFLAG, ICON
+    //ADD BUTTON, ICON
     private int rows;
     private int columns;
     private int total;
@@ -20,6 +20,13 @@ public class Board extends JPanel {
     private Cell[][] matrix;
     private int w;
     private int h;
+    private int countdownMines;
+    //private Game game;
+    private MinesLabel minesLabel;
+
+    public Board() {
+
+    }
 
     public Board(int rows, int columns) {
 
@@ -30,6 +37,9 @@ public class Board extends JPanel {
         grid = new int[rows][columns];
         all_open = total - mines;
         matrix = new Cell[rows][columns];
+        countdownMines = mines;
+        //game = new Game();
+        minesLabel = new MinesLabel();
 
         w = getWidth() / columns;
         h = getHeight() / rows;
@@ -87,15 +97,19 @@ public class Board extends JPanel {
                             cell.setFlag(true);
                             cell.setValue("Temporarily hidden");
                             repaint();
+                            countdownMines--;
                         }
                         else {
                             // remove the flag
                             cell.setFlag(false);
                             cell.setValue("Temporarily hidden");
                             repaint();
-                            //cell.setValue(str_value); ??????????? why this line (if uncomment) also affect repaint
+                            //cell.setValue(str_value); //??????????? why this line (if uncomment) also affect repaint
                             //though it's after the call of repaint?????????????
+                            countdownMines++;
                         }
+                        //setCountdownMines(countdownMines);
+
                     }
                 }
             }
@@ -109,6 +123,11 @@ public class Board extends JPanel {
                 matrix[i][j] = cell;
             }
         }
+    }
+
+    public void reset() {
+        this.createBoard();
+        repaint();
     }
 
     public void paint(Graphics g) {
@@ -143,7 +162,7 @@ public class Board extends JPanel {
 
                         g2d.setStroke(new BasicStroke(1.0f));
                         g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
-                        g2d.drawString(value, x + w / 2, y + h / 2);
+                        g2d.drawString(value, x + w / 2 - 7, y + h / 2 + 6);
                     }
                     else if (cell.isFlag() == false && !value.equals("99") && !value.equals("Temporarily hidden")) {
                         g2d.setColor(new Color(0, 255, 0));
@@ -156,7 +175,7 @@ public class Board extends JPanel {
 
                         g2d.setStroke(new BasicStroke(1.0f));
                         g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
-                        g2d.drawString(value, x + w / 2, y + h / 2);
+                        g2d.drawString(value, x + w / 2 - 4, y + h / 2 + 6);
                     }
                     else if (cell.isFlag() == true) {
                         g2d.setColor(new Color(255, 187, 0));
@@ -169,7 +188,7 @@ public class Board extends JPanel {
 
                         g2d.setStroke(new BasicStroke(1.0f));
                         g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
-                        g2d.drawString("F", x + w / 2, y + h / 2);
+                        g2d.drawString("F", x + w / 2 - 4, y + h / 2 + 6);
                     }
                     else if (cell.isFlag() == false && value.equals("Temporarily hidden")) {
                         g2d.setColor(new Color(255, 255, 255));
@@ -335,4 +354,13 @@ public class Board extends JPanel {
             }
         }
     }
+
+//    public int getCountdownMines() {
+//        return countdownMines;
+//    }
+
+    /*public void setCountdownMines(int countdownMines) {
+        this.countdownMines = countdownMines;
+    }*/
+
 }
