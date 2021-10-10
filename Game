@@ -3,6 +3,10 @@ package NewMineSweeper;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game {
     private static JFrame frame;
@@ -11,14 +15,18 @@ public class Game {
     private static JPanel buttons_panel;
     private static Board board;
     private static JLabel textfield;
-    private static JLabel countMines;
-    private static JButton restart;
+    //private static JLabel countMines;
+    private static MinesLabel countMines;
+    private static JButton restart_button;
 
-    private static JLabel timer;
+    private static JLabel timer_label;
+    private static Timer timer = new Timer();
+    private static Integer sec = 0;
 
     public static void main(String args[]) {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 
+        // frame
         frame = new JFrame();
         frame.setBounds(0, 0, 600, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,23 +36,17 @@ public class Game {
         int y = 0;
         frame.setLocation(x, y);
 
+        // panel
         panel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(boxLayout);
 
+        // top_panel (contains game's title)
         top_panel = new JPanel();
         top_panel.setLayout(new BorderLayout());
         top_panel.setBounds(0, 0, 600, 100);
 
-        FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT, 90, 0);
-        buttons_panel = new JPanel();
-        buttons_panel.setLayout(flowLayout);
-        buttons_panel.setPreferredSize(new Dimension(600, 50));
-        buttons_panel.setBackground(new Color(52, 186, 235));
-
-        board = new Board(4, 4);
-        board.setPreferredSize(new Dimension(600, 600));
-
+        // textfield (insode top_panel)
         textfield = new JLabel();
         textfield.setBackground(new Color(13, 33, 54));
         textfield.setForeground(new Color(255, 255, 255));
@@ -52,42 +54,78 @@ public class Game {
         textfield.setFont(new Font("MVBoli", Font.PLAIN,60));
         textfield.setText("MINESWEEPER");
         textfield.setOpaque(true);
-
         top_panel.add(textfield);
         panel.add(top_panel);
 
-        /*JButton restart_button = new JButton("Restart");
-        restart_button.setHorizontalAlignment(JButton.CENTER);*/
+        // buttons_panel (contains 3 panels/ buttons, below top_panel)
+        FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT, 90, 0);
+        buttons_panel = new JPanel();
+        buttons_panel.setLayout(flowLayout);
+        buttons_panel.setPreferredSize(new Dimension(600, 50));
+        buttons_panel.setBackground(new Color(52, 186, 235));
 
-        // set Mines value ?????????
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+
+        /*String mines = String.valueOf(board.getMines());
         countMines = new JLabel();
         countMines.setPreferredSize(new Dimension(80, 50));
         countMines.setBackground(Color.WHITE);
         countMines.setOpaque(true);
-        Border blackline = BorderFactory.createLineBorder(Color.black);
         countMines.setBorder(blackline);
-        String text = String.valueOf(board.getMines());
         countMines.setFont(new Font("MVBoli", Font.PLAIN, 20));
-        countMines.setHorizontalTextPosition(JLabel.CENTER);
-        countMines.setText(text);
+        countMines.setHorizontalTextPosition(JLabel.CENTER);*/
 
-        restart = new JButton();
-        restart.setPreferredSize(new Dimension(80, 50));
-        restart.setText("START");
-
-        timer = new JLabel("00:00");
-        timer.setFont(new Font("MVBoli", Font.PLAIN, 20));
-        timer.setHorizontalTextPosition(JLabel.CENTER);
-        timer.setPreferredSize(new Dimension(80, 50));
-        timer.setBackground(Color.WHITE);
-        timer.setOpaque(true);
-        timer.setBorder(blackline);
-
+        // countMines (first label inside buttons_panel)
+        countMines = new MinesLabel();
+        countMines.setPreferredSize(new Dimension(80, 50));
         buttons_panel.add(countMines);
-        buttons_panel.add(restart);
-        buttons_panel.add(timer);
+
+        // restart_button (second button inside buttons_panel)
+        restart_button = new JButton("Start");
+        //restart_button.setPreferredSize(new Dimension(120, 50));
+
+        buttons_panel.add(restart_button);
+
+        restart_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //restartGame();
+                if (restart_button.getText().equals("Start")) {
+                    restartGame();
+                }
+
+            }
+        });
+
+        // timer_label (last label inside buttons_label)
+        /*timer_label = new JLabel("0", SwingConstants.CENTER);
+        timer_label.setFont(new Font("MVBoli", Font.PLAIN, 20));
+        timer_label.setHorizontalTextPosition(JLabel.CENTER);
+        timer_label.setPreferredSize(new Dimension(80, 50));
+        timer_label.setBackground(Color.WHITE);
+        timer_label.setOpaque(true);
+        timer_label.setBorder(blackline);*/
+        timer_label = new JLabel("0");
+
+        buttons_panel.add(timer_label);
+
+        // timer (inside timer_label)
+        timer = new Timer();
+        sec = 0;
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                sec++;
+                String value = sec.toString();
+                timer_label.setText(value);
+            }
+        }, 1000, 1000);
 
         panel.add(buttons_panel);
+
+        // board (below buttons_panel)
+        board = new Board(10, 10);
+        board.setPreferredSize(new Dimension(600, 600));
         panel.add(board);
 
         frame.add(panel, BorderLayout.NORTH);
@@ -96,6 +134,17 @@ public class Game {
 
         board.showAnswer();
 
+    }
+
+    private static void startCount() {
+
+    }
+
+    private static void restartGame() {
+        board.reset();
+        timer_label.setText("0");
+        timer.cancel();
+        timer = new Timer();
     }
 }
 
