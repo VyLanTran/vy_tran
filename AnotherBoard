@@ -45,7 +45,7 @@ public class AnotherBoard extends JPanel {
     }
 
     // Interact with left, right click
-    public JLabel Interactive (AnotherBoard board) {
+    public JLabel interactive (AnotherBoard board) {
         //mines_label = new JLabel();
 
         /*Border blackline = BorderFactory.createLineBorder(Color.black);
