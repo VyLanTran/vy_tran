@@ -15,7 +15,7 @@ public class AnotherGame {
     private static JPanel buttons_panel;
     private static AnotherBoard board;
     private static JLabel textfield;
-    private static JLabel minesLabel;
+    private static JLabel mines_label;
     private static JButton restart_button;
     private static JLabel timer_label;
 
@@ -62,11 +62,11 @@ public class AnotherGame {
 
         Border blackline = BorderFactory.createLineBorder(Color.black);
 
-        // minesLabel (first button inside buttons_panel)
-        minesLabel = board.Interactive(board);
+        // mines_label (first button inside buttons_panel)
+        mines_label = board.Interactive(board);
 
         // restart_button (second button inside buttons_panel)
-        restart_button = new JButton("Start");
+        restart_button = new JButton("Restart");
         //restart_button.setPreferredSize(new Dimension(120, 50));
 
         restart_button.addActionListener(new ActionListener() {
@@ -78,22 +78,22 @@ public class AnotherGame {
 
         // timer_label (last label inside buttons_label)
         //timer_label = new JLabel("0", SwingConstants.CENTER);
-        timer_label = new JLabel("0");
-        /*timer_label.setFont(new Font("MVBoli", Font.PLAIN, 20));
-        timer_label.setHorizontalTextPosition(JLabel.CENTER);
+        timer_label = new JLabel();
         timer_label.setPreferredSize(new Dimension(80, 50));
         timer_label.setBackground(Color.WHITE);
         timer_label.setOpaque(true);
         timer_label.setBorder(blackline);
-        timer_label = new JLabel("0");*/
+        timer_label.setFont(new Font("MVBoli", Font.PLAIN, 20));
+        timer_label.setVerticalTextPosition(JLabel.CENTER);
+        timer_label.setHorizontalTextPosition(JLabel.CENTER);
+        timer_label.setText("0");
 
-        buttons_panel.add(minesLabel);
+        buttons_panel.add(mines_label);
         buttons_panel.add(restart_button);
         buttons_panel.add(timer_label);
 
         // timer (inside timer_label)
         timer = new Timer();
-        //startCountTime();
 
         panel.add(top_panel);
         panel.add(buttons_panel);
@@ -110,7 +110,6 @@ public class AnotherGame {
         frame.pack();
         frame.setVisible(true);
 
-        //board.showAnswer();
     }
 
     /*public static JLabel drawTimerLabel() {
@@ -128,27 +127,30 @@ public class AnotherGame {
     }*/
 
     private static void restartGame() {
-        //board.setFirstClick(false);
         board.reset();
+        sec = 0;
         timer_label.setText("0");
         timer.cancel();
         timer = new Timer();
-        //startCountTime();
     }
 
-    /*public static void startCountTime() {
-        if (board.isFirstClick() == false) {
-            sec = 0;
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    sec++;
-                    String value = sec.toString();
-                    timer_label.setText(value);
-                }
-            }, 1000, 1000);
-        }
-    }*/
+    public static void startCountTime() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                sec++;
+                String value = sec.toString();
 
-    // Khi click chuot vao o dau tien thi moi bat dau dem gio
+                timer_label.setFont(new Font("MVBoli", Font.PLAIN, 20));
+                timer_label.setVerticalTextPosition(JLabel.CENTER);
+                timer_label.setHorizontalTextPosition(JLabel.CENTER);
+                timer_label.setText(value);
+            }
+        }, 1000, 1000);
+    }
+
+    public static void stopCountTime() {
+        timer.cancel();
+    }
+
 }
