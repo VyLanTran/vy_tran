@@ -63,7 +63,7 @@ public class AnotherGame {
         Border blackline = BorderFactory.createLineBorder(Color.black);
 
         // mines_label (first button inside buttons_panel)
-        mines_label = board.Interactive(board);
+        mines_label = board.interactive(board);
 
         // restart_button (second button inside buttons_panel)
         restart_button = new JButton("Restart");
