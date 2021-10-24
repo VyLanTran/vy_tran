@@ -23,9 +23,9 @@ public class AnotherBoard extends JPanel {
     private int w;
     private int h;
     private int countdownMines;
-    private JLabel minesLabel;
-    private boolean firstClick = false;
+    private JLabel mines_label;
     private AnotherGame game = new AnotherGame();
+    private int click_num;
 
     public AnotherBoard(int rows, int columns) {
 
@@ -33,7 +33,7 @@ public class AnotherBoard extends JPanel {
         this.columns = columns;
         this.total = rows * columns;
         mines = (int) round(total * 0.15);
-        grid = new int[rows][columns];  // @@@@@@@@@@@@@@@@@@@@@@@@@@
+        grid = new int[rows][columns];
         all_open = total - mines;
         matrix = new Cell[rows][columns];
         countdownMines = mines;
@@ -44,14 +44,15 @@ public class AnotherBoard extends JPanel {
         this.createBoard();
     }
 
+    // Interact with left, right click
     public JLabel Interactive (AnotherBoard board) {
-        minesLabel = new JLabel();
+        //mines_label = new JLabel();
 
-        Border blackline = BorderFactory.createLineBorder(Color.black);
-        minesLabel.setPreferredSize(new Dimension(80, 50));
-        minesLabel.setBackground(Color.WHITE);
-        minesLabel.setOpaque(true);
-        minesLabel.setBorder(blackline);
+        /*Border blackline = BorderFactory.createLineBorder(Color.black);
+        mines_label.setPreferredSize(new Dimension(80, 50));
+        mines_label.setBackground(Color.WHITE);
+        mines_label.setOpaque(true);
+        mines_label.setBorder(blackline);*/
 
         MouseListener mouseListener = new MouseInputAdapter() {
             @Override
@@ -73,8 +74,10 @@ public class AnotherBoard extends JPanel {
                 Integer value = grid[row_index][col_index];
                 String str_value = value.toString();
                 cell.setValue(str_value);
-                board.setFirstClick(true);
-                //game.startCountTime();
+                click_num++;
+                if (click_num == 1) {
+                    game.startCountTime();
+                }
 
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     if (cell.isReveal() == false && cell.isFlag() == false) {
@@ -91,17 +94,20 @@ public class AnotherBoard extends JPanel {
                             // Open all other mines and end game
                             revealAllMines();
                             disableOpen();
+                            game.stopCountTime();
                         }
                         if (result == "Win"){
                             System.out.println("WIN");
                             revealAllMines();
                             disableOpen();
+                            game.stopCountTime();
                         }
                     }
                 }
 
+                // Right click will set a flag, remove a flag, count the number of mines left corresponding to the
+                // number of flags
                 else if (SwingUtilities.isRightMouseButton(e)) {
-                    minesLabel = new JLabel();
                     if (cell.isReveal() == false) {
                         if (cell.isFlag() == false) {
                             // Set the flag
@@ -119,40 +125,32 @@ public class AnotherBoard extends JPanel {
                             //though it's after the call of repaint?????????????
                             countdownMines++;
                         }
-
-                        //JLabel l = new JLabel(String.valueOf(countdownMines), SwingConstants.CENTER);
-                        //JLabel l = new JLabel();
-                        //l = new JLabel();
-                        minesLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-                        minesLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                        minesLabel.setVerticalAlignment(SwingConstants.CENTER);
-                        minesLabel.setText(String.valueOf(countdownMines));
-                        //minesLabel = updateMinesLeft(minesLabel, countdownMines);
-                        //minesPanel.add(l);
-                        //JPanel minesPanel = new JPanel();
-                        //minesPanel = updateMinesPanel(minesPanel, l);
+                        /*mines_label = updateMinesLeft(countdownMines);
+                        System.out.println(countdownMines);*/
                     }
-                    minesLabel = updateMinesLeft(minesLabel, countdownMines);
+                    mines_label = updateMinesLeft(countdownMines);
+                    System.out.println(countdownMines);
                 }
             }
-            //return minesLabel;
         };
         board.addMouseListener(mouseListener);
-        //minesPanel.addMouseListener(mouseListener);
-        return minesLabel;
+        return mines_label;
     }
 
+    // Create a new board with a new matrix and show the hidden answer
     private void createBoard() {
+        click_num = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 Cell cell = new Cell();
                 matrix[i][j] = cell;
             }
         }
-        grid = setNumbers();    //!!!!!!!!!!!!!!!!!!!
-        showAnswer(grid);
+        grid = setNumbers();
+        showAnswer();
     }
 
+    // reset will make the board blank and create a new matrix
     public void reset() {
         this.createBoard();
         repaint();
@@ -244,44 +242,42 @@ public class AnotherBoard extends JPanel {
 
     // randomly set mines on the answer board
     public int[][] setMines() {
-        int[][] other_grid = new int[rows][columns];
+        grid = new int[rows][columns];
+        // reset the initial value of mines
+        mines = (int) round(total * 0.15);
         while (mines > 0) {
             Random rand = new Random();
             int row = rand.nextInt(rows);
             int col = rand.nextInt(columns);
-            /*if (grid[row][col] != 99) {
+            if (grid[row][col] != 99) {
                 grid[row][col] = 99;
-                mines--;
-            }*/
-            if (other_grid[row][col] != 99) {
-                other_grid[row][col] = 99;
                 mines--;
             }
         }
-        //return grid;
-        return other_grid;
+        return grid;
     }
 
     // set number to each cell that is not mined, this number shows the number of mined neighbors. The returned grid
     // will contain the full answer
     public int[][] setNumbers() {
-        int[][] other_grid = setMines();
+        grid  = setMines();
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                if (other_grid[i][j] != 99) {
+                if (grid[i][j] != 99) {
                     int[] position = position(i, j);
                     int minedNeighbors = 0;
                     for (int x = position[0]; x <= position[1]; x++) {
                         for (int y = position[2]; y <= position[3]; y++) {
-                            if (other_grid[x][y] == 99) {minedNeighbors++;}
+                            if (grid[x][y] == 99) {
+                                minedNeighbors++;}
                         }
                     }
-                    other_grid[i][j] = minedNeighbors;
+                    grid[i][j] = minedNeighbors;
                 }
             }
         }
-        return other_grid;
+        return grid;
     }
 
     // provide the start and stop position to count the mined neighbors
@@ -305,15 +301,15 @@ public class AnotherBoard extends JPanel {
         return position;
     }
 
-    // Demo the full answer board
-    public void showAnswer(int[][] other_grid) {
+    // Show the full answer board
+    public void showAnswer() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                Integer n = other_grid[i][j];
+                Integer n = grid[i][j];
                 int space = 4 - n.toString().length();
                 String s = "";
                 for (int k = 0; k < space; k++) { s = s + " "; }
-                System.out.print(other_grid[i][j] + s);
+                System.out.print(grid[i][j] + s);
             }
             System.out.println();
         }
@@ -321,7 +317,7 @@ public class AnotherBoard extends JPanel {
                             "*******************************************");
     }
 
-    // Determine Win or Lose or Not Finished
+    // Check Win or Lose or Not Finished
     public String gameState(int r_index, int c_index) {
         // Open a mine - Lose
         if (grid[r_index][c_index] == 99)
@@ -334,6 +330,7 @@ public class AnotherBoard extends JPanel {
         }
     }
 
+    // Check if all cells (not a mined one) are open
     public boolean isFull() {
         int open_not_mines = 0;
         for (int i = 0; i < rows; i++) {
@@ -345,6 +342,7 @@ public class AnotherBoard extends JPanel {
         return open_not_mines == all_open;
     }
 
+    // don't allow player to open any cells
     public void disableOpen() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -353,6 +351,7 @@ public class AnotherBoard extends JPanel {
         }
     }
 
+    // when player opens a blank cell, automatically extend other neighbored blank cells
     public void extendBlank(int i, int j) {
         int[][] dirs = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
         for (int[] d : dirs) {
@@ -382,6 +381,7 @@ public class AnotherBoard extends JPanel {
         }
     }
 
+    // reveal all hidden mines on the board (called when player open a mine)
     public void revealAllMines() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -395,22 +395,21 @@ public class AnotherBoard extends JPanel {
         }
     }
 
-    public JLabel updateMinesLeft(JLabel l, int countdownMines) {
-        l = new JLabel();
-        l.setFont(new Font("Arial", Font.PLAIN, 16));
-        l.setHorizontalAlignment(SwingConstants.CENTER);
-        l.setVerticalAlignment(SwingConstants.CENTER);
-        l.setText(String.valueOf(countdownMines));
+    public JLabel updateMinesLeft(int countdownMines) {
+        mines_label = new JLabel();
 
-        return l;
-    }
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+        mines_label.setPreferredSize(new Dimension(80, 50));
+        mines_label.setBackground(Color.WHITE);
+        mines_label.setOpaque(true);
+        mines_label.setBorder(blackline);
 
-    public boolean isFirstClick() {
-        return firstClick;
-    }
+        mines_label.setFont(new Font("Arial", Font.PLAIN, 16));
+        mines_label.setHorizontalAlignment(SwingConstants.CENTER);
+        mines_label.setVerticalAlignment(SwingConstants.CENTER);
+        mines_label.setText(String.valueOf(countdownMines));
 
-    public void setFirstClick(boolean firstClick) {
-        this.firstClick = firstClick;
+        return mines_label;
     }
 
 }
