@@ -1,0 +1,17 @@
+public class Palindrome {
+	
+	public static boolean is_palindrome(String str) {
+		if (str.length() <= 1) {
+			return true;
+		}
+		String new_str = str.substring(1, str.length() - 1);
+		return str.charAt(0) == str.charAt(str.length() - 1) && is_palindrome(new_str);
+	}
+	
+	public static void main(String args[]) {
+		System.out.println(is_palindrome("aab"));
+		System.out.println(is_palindrome("ice"));
+		System.out.println(is_palindrome("aba"));
+		System.out.println(is_palindrome("anna"));
+	}
+}
