@@ -1,0 +1,24 @@
+public class Anagrams {
+	
+	public static boolean is_anagrams(String a, String b) {
+		if (a.length() != b.length()) {
+			return false;
+		}
+		if (a.length() == 0 && b.length() == 0) {
+			return true;
+		}
+		return b.contains(a.substring(0, 1)) && is_anagrams(a.substring(1), remove_char(b, a.charAt(0)));
+	}
+	
+	public static String remove_char(String str, char c) {
+		int index = str.indexOf(c);
+		return str.substring(0, index) + str.substring(index + 1);
+	}
+	
+	public static void main(String args[]) {
+		System.out.println(is_anagrams("mmonkey", "onemkym"));
+		System.out.println(is_anagrams("hello", "ollhs"));
+		System.out.println(is_anagrams("listen", "silent"));
+		System.out.println(is_anagrams("triangle", "integral"));
+	}
+}
