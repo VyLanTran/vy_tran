@@ -1,0 +1,53 @@
+public class ReverseLinkedList {
+	public static void reverse(LinkedList l) {
+		Node cur = l.head;
+		Node prev = null;
+		Node next = null;
+		
+		while (cur != null) {
+			next = cur.next;
+			cur.next = prev;
+			prev = cur;
+			cur = next;
+		}
+		
+		l.head = prev;
+		
+		display(l);
+	}
+	
+	public static void display(LinkedList l) {
+		Node cur = l.head;
+		while (cur != null) {
+			System.out.print(cur.data + "\s");
+			cur = cur.next;
+		}
+	}
+	
+	public static void main(String args[]) {
+		Node node1 = new Node("a");
+		Node node2 = new Node("b");
+		Node node3 = new Node("c");
+		
+		LinkedList list = new LinkedList();
+		list.head = node1;
+		node1.next = node2;
+		node2.next = node3;
+		
+		reverse(list);
+	}
+}
+
+class Node<E> {
+	E data;
+	Node next;
+	
+	public Node(E data) {
+		this.data = data;
+		next = null;
+		}
+}
+
+class LinkedList {
+	Node head;
+}
