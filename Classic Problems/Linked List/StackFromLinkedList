@@ -60,7 +60,6 @@ public class StackFromLinkedList {
 	}
 }
 
-
 class Node {
 	Object data;
 	Node next;
