@@ -1,0 +1,71 @@
+public class StackFromLinkedList {
+	static Node top;
+	
+	public StackFromLinkedList() {
+		top = null;
+	}
+	
+	public static void push(int data) {
+		Node new_top = new Node(data);
+		new_top.next = top;
+		top = new_top;
+	}
+	
+	public static boolean isEmpty() {
+		return top == null;
+	}
+	
+	public static int peek() {
+		if (top == null) {
+			System.out.println("Empty stack");
+			return -1;
+		}
+		else {
+			return top.data;
+		}
+	}
+	
+	public static void pop() {
+		if (top == null) {
+			System.out.println("Empty stack");
+		}
+		top = top.next;
+	}
+	
+	public static void display() {
+		System.out.println("Stack from top to bottom");
+		Node cur = top;
+		while (cur != null) {
+			System.out.print(cur.data + "\s");
+			cur = cur.next;
+		}
+	}
+	
+	public static void main(String args[]) {
+		StackFromLinkedList stk = new StackFromLinkedList();
+//		System.out.println(stk.isEmpty());
+//		System.out.println(stk.peek());
+		
+		stk.push(10);
+		stk.push(3);
+		stk.push(20);
+		stk.push(9);
+		
+//		System.out.println(stk.isEmpty());
+		stk.display();
+		System.out.println("\n");
+//		System.out.println(stk.peek());
+		stk.pop();
+		stk.display();
+	}
+}
+
+class Node {
+	int data;
+	Node next;
+	
+	public Node(int data) {
+		this.data = data;
+		next = null;
+	}
+}
