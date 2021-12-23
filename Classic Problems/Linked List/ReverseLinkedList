@@ -25,7 +25,7 @@ public class ReverseLinkedList {
 	}
 	
 	public static void main(String args[]) {
-		Node node1 = new Node("a");
+		Node node1 = new Node("1");
 		Node node2 = new Node("b");
 		Node node3 = new Node("c");
 		
@@ -38,11 +38,11 @@ public class ReverseLinkedList {
 	}
 }
 
-class Node<E> {
-	E data;
+class Node {
+	Object data;
 	Node next;
 	
-	public Node(E data) {
+	public Node(Object data) {
 		this.data = data;
 		next = null;
 		}
