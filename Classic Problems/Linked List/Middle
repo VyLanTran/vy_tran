@@ -26,27 +26,3 @@ public class Middle {
 		System.out.println("The middle node is: " + findMiddle(list).data);
 	}
 }
-
-class Node {
-	Object data;
-	Node next;
-	
-	public Node(Object data) {
-		this.data = data;
-		next = null;
-	}
-}
-
-class LinkedList {
-	Node head;
-	
-	public int length() {
-		int count = 0;
-		Node cur = head;
-		while (cur != null) {
-			count += 1;
-			cur = cur.next;
-		}
-		return count;
-	}
-}
