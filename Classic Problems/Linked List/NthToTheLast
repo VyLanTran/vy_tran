@@ -20,33 +20,3 @@ public class NthToTheLast {
 		System.out.println(NthLast(list, 3).data);
 	}
 }
-
-class Node {
-	Object data;
-	Node next;
-	
-	Node(Object data) {
-		this.data = data;
-		next = null;
-	}
-}
-
-class LinkedList {
-	Node head;
-	
-	public int length() {
-		Node cur = head;
-		int count = 0;
-		while (cur != null) {
-			cur = cur.next;
-			count += 1;
-		}
-		return count;
-	}
-	
-	public void push(Object data) {
-		Node new_node = new Node(data);
-		new_node.next = head;
-		head = new_node;
-	}
-}
