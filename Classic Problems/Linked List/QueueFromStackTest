@@ -1,0 +1,45 @@
+import java.util.Stack;
+
+class QueueFromStack {
+	Stack queue;
+	
+	public QueueFromStack() {
+		queue = new Stack();
+	}
+	
+	public boolean isEmpty() {
+		return queue.isEmpty();
+	}
+	
+	public void enqueue(Object data) {
+		queue.push(data);
+	}
+	
+	public void dequeue() {
+		if (isEmpty()) {
+			System.out.println("Empty queue, can't dequeue");
+		}
+		else {
+			queue.removeElementAt(0);;
+		}	
+	}
+	
+	public void display() {
+		System.out.println(queue.toString());
+	}
+}
+
+public class QueueFromStackTest {
+	public static void main(String args[]) {
+		QueueFromStack q = new QueueFromStack();
+		
+		q.enqueue(12);
+		q.enqueue("pear");
+		q.enqueue(22.9);
+		q.display();
+		
+		q.dequeue();
+		
+		q.display();
+	}
+}
