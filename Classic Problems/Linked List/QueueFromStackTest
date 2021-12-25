@@ -1,31 +1,49 @@
 import java.util.Stack;
 
 class QueueFromStack {
-	Stack queue;
+	Stack main_queue;
+	Stack helper_queue;
 	
 	public QueueFromStack() {
-		queue = new Stack();
+		main_queue = new Stack();
+		helper_queue = new Stack();
 	}
 	
 	public boolean isEmpty() {
-		return queue.isEmpty();
+		return main_queue.isEmpty();
 	}
 	
 	public void enqueue(Object data) {
-		queue.push(data);
+		while (!main_queue.isEmpty()) {
+			helper_queue.push(main_queue.pop());
+		}
+		main_queue.push(new Node(data));
+		while (!helper_queue.isEmpty()) {
+			main_queue.push(helper_queue.pop());
+		}
 	}
 	
-	public void dequeue() {
-		if (isEmpty()) {
+	public Object dequeue() {
+		if (main_queue.isEmpty()) {
 			System.out.println("Empty queue, can't dequeue");
+			return null;
 		}
 		else {
-			queue.removeElementAt(0);;
+			return ((Node)main_queue.pop()).data;
 		}	
 	}
 	
 	public void display() {
-		System.out.println(queue.toString());
+		if (main_queue.isEmpty()) {
+			System.out.println("Empty queue");
+		}
+		else {
+			Stack clone = (Stack)main_queue.clone();
+			while (!clone.isEmpty()) {
+				System.out.print(((Node)clone.pop()).data + "\t");
+			}
+			System.out.println();
+		}
 	}
 }
 
@@ -39,7 +57,9 @@ public class QueueFromStackTest {
 		q.display();
 		
 		q.dequeue();
-		
+//		
 		q.display();
+//		System.out.println(q.dequeue());
 	}
 }
+
