@@ -1,0 +1,66 @@
+class BinaryTree {
+	Node root;
+	
+	public BinaryTree() {
+		root = null;
+	}
+	
+	public void printPreOrder(Node node) {
+		if (node == null) {
+			return;
+		}
+		System.out.print(node.data + "\s");
+		printPreOrder(node.left);
+		printPreOrder(node.right);
+	}
+	
+	public void preOrderTraversal() {
+		printPreOrder(root);
+		System.out.println();
+	}
+	
+	public void printPostOrder(Node node) {
+		if (node == null) {
+			return;
+		}
+		printPostOrder(node.left);
+		printPostOrder(node.right);
+		System.out.print(node.data + "\s");
+	}
+	
+	public void postOrderTraversal() {
+		printPostOrder(root);
+		System.out.println();
+	}
+	
+	public void printInOrder(Node node) {
+		if (node == null) {
+			return;
+		}
+		printInOrder(node.left);
+		System.out.print(node.data + "\s");
+		printInOrder(node.right);
+	}
+	
+	public void inOrderTraversal() {
+		printInOrder(root);
+		System.out.println();
+	}
+}
+
+public class TreeTraversal {
+	public static void main(String args[]) {
+		BinaryTree tree = new BinaryTree();
+		tree.root = new Node("A");
+		tree.root.left = new Node("B");
+		tree.root.right = new Node("C");
+		tree.root.left.left = new Node("D");
+		tree.root.left.right = new Node("E");
+		tree.root.right.left = new Node("F");
+		tree.root.left.left.left = new Node("G");
+		
+		tree.preOrderTraversal();
+		tree.postOrderTraversal();
+		tree.inOrderTraversal();
+	}
+}
