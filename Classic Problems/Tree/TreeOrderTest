@@ -1,8 +1,8 @@
-class BinaryTree {
-	Node root;
+class TreeTraversal {
+	BinaryTree tree;
 	
-	public BinaryTree() {
-		root = null;
+	public TreeTraversal(BinaryTree tree) {
+		this.tree = tree;
 	}
 	
 	public void printPreOrder(Node node) {
@@ -15,7 +15,7 @@ class BinaryTree {
 	}
 	
 	public void preOrderTraversal() {
-		printPreOrder(root);
+		printPreOrder(tree.root);
 		System.out.println();
 	}
 	
@@ -29,7 +29,7 @@ class BinaryTree {
 	}
 	
 	public void postOrderTraversal() {
-		printPostOrder(root);
+		printPostOrder(tree.root);
 		System.out.println();
 	}
 	
@@ -43,12 +43,12 @@ class BinaryTree {
 	}
 	
 	public void inOrderTraversal() {
-		printInOrder(root);
+		printInOrder(tree.root);
 		System.out.println();
 	}
 }
 
-public class TreeTraversal {
+public class TreeOrderTest {
 	public static void main(String args[]) {
 		BinaryTree tree = new BinaryTree();
 		tree.root = new Node("A");
@@ -59,8 +59,9 @@ public class TreeTraversal {
 		tree.root.right.left = new Node("F");
 		tree.root.left.left.left = new Node("G");
 		
-		tree.preOrderTraversal();
-		tree.postOrderTraversal();
-		tree.inOrderTraversal();
+		TreeTraversal tt = new TreeTraversal(tree);
+		tt.preOrderTraversal();
+		tt.postOrderTraversal();
+		tt.inOrderTraversal();
 	}
 }
