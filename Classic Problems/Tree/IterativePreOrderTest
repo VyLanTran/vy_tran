@@ -1,0 +1,43 @@
+import java.util.Stack;
+
+class IterativePreOrder {
+	BinaryTree tree;
+	Stack<Object> stk;
+	
+	public IterativePreOrder(BinaryTree tree) {
+		this.tree = tree;
+		stk = new Stack<Object>();
+	}
+	
+	public void push(Node node) {
+		if (node == null) {
+			return;
+		}
+		push(node.right);
+		push(node.left);
+		stk.add(node.data);
+	}
+	
+	public void preOrderTraversal() {
+		push(tree.root);
+		while (!stk.empty()) {
+			System.out.print(stk.pop() + "\s");
+		}
+	}
+}
+
+public class IterativePreOrderTest {
+	public static void main(String args[]) {
+		BinaryTree tree = new BinaryTree();
+		tree.root = new Node("A");
+		tree.root.left = new Node("B");
+		tree.root.right = new Node("C");
+		tree.root.left.left = new Node("D");
+		tree.root.left.right = new Node("E");
+		tree.root.right.left = new Node("F");
+		tree.root.left.left.left = new Node("G");
+		
+		IterativePreOrder ite = new IterativePreOrder(tree);
+		ite.preOrderTraversal();
+	}
+}
