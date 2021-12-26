@@ -1,0 +1,43 @@
+import java.util.Stack;
+
+class IterativePostOrder {
+	BinaryTree tree;
+	Stack<Object> stk;
+	
+	public IterativePostOrder(BinaryTree tree) {
+		this.tree = tree;
+		stk = new Stack<Object>();
+	}
+	
+	public void push(Node node) {
+		if (node == null) {
+			return;
+		}
+		stk.add(node.data);
+		push(node.right);
+		push(node.left);
+	}
+	
+	public void postOrderTraversal() {
+		push(tree.root);
+		while (!stk.empty()) {
+			System.out.print(stk.pop() + "\s");
+		}
+	}
+}
+
+public class IterativePostOrderTest {
+	public static void main(String args[]) {
+		BinaryTree tree = new BinaryTree();
+		tree.root = new Node("A");
+		tree.root.left = new Node("B");
+		tree.root.right = new Node("C");
+		tree.root.left.left = new Node("D");
+		tree.root.left.right = new Node("E");
+		tree.root.right.left = new Node("F");
+		tree.root.left.left.left = new Node("G");
+		
+		IterativePostOrder ite = new IterativePostOrder(tree);
+		ite.postOrderTraversal();
+	}
+}
