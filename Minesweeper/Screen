@@ -1,0 +1,119 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Screen extends Component implements ActionListener, MouseListener {
+    private static JFrame frame = new JFrame();
+    private static JLabel textfield = new JLabel();
+    private static JPanel buttonsPanel = new JPanel();
+    private static JLabel minesLeft = new JLabel();
+    private static JButton restartButton = new JButton();
+    private static JLabel timeLabel = new JLabel();
+    private static Board board = new Board();
+
+    private static int seconds = 0;
+    static Timer timer = new Timer(1000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            seconds++;
+            timeLabel.setText(String.valueOf(seconds));
+        }
+    });
+
+    public static void main(String args[]) {
+        Screen screen = new Screen();
+
+        // frame
+        frame.setSize(600, 800);
+        frame.setLocationRelativeTo(null);
+        frame.getContentPane().setBackground(new Color(217, 217, 217));
+        frame.setLayout(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+
+        //game title
+        textfield.setBounds(0, 0, 600, 100);
+        textfield.setBackground(new Color(25, 25, 25));
+        textfield.setForeground(new Color(255, 255, 255));
+        textfield.setFont(new Font("MV Boli", Font.BOLD, 40));
+        textfield.setBorder(BorderFactory.createBevelBorder(1));
+        textfield.setOpaque(true);
+        textfield.setHorizontalAlignment(JTextField.CENTER);
+        textfield.setText("MINESWEEPER");
+
+        //buttons area
+        buttonsPanel.setBounds(0, 100, 600, 70);
+        buttonsPanel.setBackground(new Color(128, 128, 128));
+
+        //a label to count down mines
+        minesLeft.setBounds(80, 105, 60, 60);
+        minesLeft.setBackground(new Color(52, 52, 76));
+        minesLeft.setForeground(new Color(255, 255, 255));
+        minesLeft.setFont(new Font("serif", Font.BOLD, 20));
+        minesLeft.setBorder(BorderFactory.createBevelBorder(1));
+        minesLeft.setOpaque(true);
+        minesLeft.setHorizontalAlignment(JTextField.CENTER);
+        minesLeft.setText(String.valueOf(board.countdownMines));
+
+        board.addMouseListener(screen);
+
+        //button to restart the game
+        restartButton.setBounds(270, 105, 60, 60);
+        restartButton.setBackground(new Color(52, 52, 76));
+        restartButton.setForeground(new Color(255, 255, 255));
+        restartButton.setFont(new Font("MV Boli", Font.PLAIN, 12));
+        restartButton.setBorder(BorderFactory.createBevelBorder(1));
+        restartButton.setOpaque(true);
+        restartButton.setHorizontalAlignment(JTextField.CENTER);
+		restartButton.setFocusable(true);
+		restartButton.addActionListener(screen);
+        restartButton.setText("Restart");
+
+        //label to count time passed
+        timeLabel.setBounds(450, 105, 100, 60);
+        timeLabel.setBackground(new Color(52, 52, 76));
+        timeLabel.setForeground(new Color(255, 255, 255));
+        timeLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+        timeLabel.setBorder(BorderFactory.createBevelBorder(1));
+        timeLabel.setOpaque(true);
+        timeLabel.setHorizontalAlignment(JTextField.CENTER);
+        timeLabel.setText("0");
+
+        //main grid
+        board.setBounds(0, 170, 600, 600);
+
+        frame.add(restartButton);
+        frame.add(minesLeft);
+        frame.add(timeLabel);
+        frame.add(textfield);
+        frame.add(buttonsPanel);
+        frame.add(board);
+
+        frame.setVisible(true);
+    }
+
+    public void paint(Graphics g) {
+
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == restartButton) {
+            seconds = 0;
+            timeLabel.setText("0");
+            board.reset();
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        minesLeft.setText(String.valueOf(board.countdownMines));
+    }
+
+    public void mousePressed(MouseEvent e) { }
+    public void mouseReleased(MouseEvent e) { }
+    public void mouseEntered(MouseEvent e) { }
+    public void mouseExited(MouseEvent e) { }
+
+}
