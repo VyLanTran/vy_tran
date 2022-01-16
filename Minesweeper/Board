@@ -1,0 +1,367 @@
+import javax.swing.*;
+import static java.lang.Math.floor;
+import static java.lang.Math.round;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Random;
+
+public class Board extends JPanel {
+    //ADD BUTTON, ICON
+    private final int BOARD_WIDTH = 600;
+    private final int BOARD_HEIGHT = 600;
+
+    private final int ROWS = 12;
+    private final int COLUMNS = 12;
+    private final int TOTAL = ROWS * COLUMNS;
+    private final int TOTAL_MINES = (int) round(TOTAL * 0.15);
+    private final int ALL_OPEN = TOTAL - TOTAL_MINES;
+    private final int UNIT_WIDTH = BOARD_WIDTH / COLUMNS;
+    private final int UNIT_HEIGHT = BOARD_HEIGHT / ROWS;
+
+    private int[][] grid = new int[ROWS][COLUMNS];
+    private Cell[][] matrix = new Cell[ROWS][COLUMNS];
+    private int mines = TOTAL_MINES;;
+    public int countdownMines = TOTAL_MINES;
+
+    Screen screen = new Screen();
+
+    private ImageIcon orgBlock;
+
+    public Board() {
+        orgBlock = new ImageIcon("org_block.jpg");
+
+        this.createBoard();
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                screen.timer.start();
+                //get the x, y coord of the mouse
+                super.mousePressed(e);
+                int x = e.getX();
+                int y = e.getY();
+
+                int row_index = (int) (floor(y / UNIT_HEIGHT));
+                int col_index = (int) (floor(x / UNIT_WIDTH));
+
+                Cell cell = matrix[row_index][col_index];
+                Integer value = grid[row_index][col_index];
+                String str_value = value.toString();
+                cell.setValue(str_value);
+
+                //if player left-clicks the mouse
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    //if the cell wasn't revealed and doesn't have flag
+                    if (cell.isReveal() == false && cell.isFlag() == false) {
+                        cell.setReveal(true);
+                        if (!value.toString().equals("0")) {repaint();}
+                        else {
+                            extendBlank(row_index, col_index);
+                        }
+
+                        String result = gameState(row_index, col_index);
+                        if (result == "Lose") {
+                            screen.timer.stop();
+                            System.out.println("GAME OVER");
+                            // Open all other mines and end game
+                            revealAllMines();
+                            disableOpen();
+                        }
+                        if (result == "Win"){
+                            screen.timer.stop();
+                            System.out.println("WIN");
+                            revealAllMines();
+                            disableOpen();
+                        }
+                    }
+                }
+
+                //if the player right-clicks the mouse
+                else if (SwingUtilities.isRightMouseButton(e)) {
+                    if (cell.isReveal() == false) {
+                        if (cell.isFlag() == false) {
+                            // Set the flag
+                            cell.setFlag(true);
+                            cell.setValue("Temporarily hidden");
+                            repaint();
+                            countdownMines--;
+                        }
+                        else {
+                            // remove the flag
+                            cell.setFlag(false);
+                            cell.setValue("Temporarily hidden");
+                            repaint();
+                            countdownMines++;
+                        }
+                        //setCountdownMines(countdownMines);
+
+                    }
+                }
+            }
+        });
+    }
+
+    //initialize a board
+    private void createBoard() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                matrix[i][j] = new Cell();
+            }
+        }
+        grid = setNumbers();
+        showAnswer();
+    }
+
+    public void reset() {
+        mines = TOTAL_MINES;
+        grid = new int[ROWS][COLUMNS];
+        this.createBoard();
+        repaint();
+        screen.timer.stop();
+    }
+
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+
+                int x = j * UNIT_WIDTH;
+                int y = i * UNIT_HEIGHT;
+
+                //draw the matrix again each time it is called
+                Cell cell = matrix[i][j];
+                cell.setX(x);
+                cell.setY(y);
+
+                g2d.setColor(Color.BLACK);
+                g2d.drawRect(x, y, UNIT_WIDTH, UNIT_HEIGHT);
+
+                String value = cell.getValue();
+
+                if (value == null) {
+                    g2d.setColor(new Color(255, 255, 255));
+                    g2d.fillRect(x, y, UNIT_WIDTH, UNIT_HEIGHT);
+                    g2d.setColor(Color.BLACK);
+                    drawBorders(g, x, y);
+//                	draw(screen, g, orgBlock, x, y);
+                }
+
+                if (value != null) {
+                    //revealing a cell having bomb
+                    if (cell.isFlag() == false && value.equals("99")) {
+                        g2d.setColor(new Color(255, 0, 0));
+                        g2d.fillRect(x, y, UNIT_WIDTH, UNIT_HEIGHT);
+                        drawBorders(g, x, y);
+
+                        g2d.setStroke(new BasicStroke(1.0f));
+                        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+                        g2d.drawString(value, x + UNIT_WIDTH / 2 - 7, y + UNIT_HEIGHT / 2 + 6);
+//                    	draw(this, g, orgBlock, x, y);
+                    }
+
+                    //revealing a safe cell
+                    else if (cell.isFlag() == false && !value.equals("99") && !value.equals("Temporarily hidden")) {
+                        g2d.setColor(new Color(0, 255, 0));
+                        g2d.fillRect(x, y, UNIT_WIDTH, UNIT_HEIGHT);
+                        g2d.setColor(Color.BLACK);
+                        drawBorders(g, x, y);
+
+                        g2d.setStroke(new BasicStroke(1.0f));
+                        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+                        g2d.drawString(value, x + UNIT_WIDTH / 2 - 4, y + UNIT_HEIGHT / 2 + 6);
+                    }
+
+                    //putting flag upon a cell
+                    else if (cell.isFlag() == true) {
+                        g2d.setColor(new Color(255, 187, 0));
+                        g2d.fillRect(x, y, UNIT_WIDTH, UNIT_HEIGHT);
+                        g2d.setColor(Color.BLACK);
+                        drawBorders(g, x, y);
+
+                        g2d.setStroke(new BasicStroke(1.0f));
+                        g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+                        g2d.drawString("F", x + UNIT_WIDTH / 2 - 4, y + UNIT_HEIGHT / 2 + 6);
+                    }
+
+                    //removing flag
+                    else if (cell.isFlag() == false && value.equals("Temporarily hidden")) {
+                        g2d.setColor(new Color(255, 255, 255));
+                        g2d.fillRect(x, y, UNIT_WIDTH, UNIT_HEIGHT);
+                        g2d.setColor(Color.BLACK);
+                        drawBorders(g, x, y);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void draw(Component c, Graphics g, ImageIcon img, int x, int y) {
+    	img.paintIcon(c, g, x, y);
+    }
+
+    //helper function for paint method- draw borders for each cell
+    public void drawBorders(Graphics g, int x, int y) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.black);
+        g2d.drawLine(x, y, x + UNIT_WIDTH, y);   // Top border
+        g2d.drawLine(x, y, x, y + UNIT_HEIGHT);   // Left border
+        g2d.drawLine(x, y + UNIT_HEIGHT, x + UNIT_WIDTH, y + UNIT_HEIGHT);   // Bottom border
+        g2d.drawLine(x + UNIT_WIDTH, y + UNIT_HEIGHT, x + UNIT_WIDTH, y);   // Right border
+    }
+
+    //randomly set mines on the answer board
+    public int[][] setMines() {
+        while (mines > 0) {
+            Random rand = new Random();
+            int row = rand.nextInt(ROWS);
+            int col = rand.nextInt(COLUMNS);
+            if (grid[row][col] != 99) {
+                grid[row][col] = 99;
+                mines--;
+            }
+        }
+        return grid;
+    }
+
+    //set number to each cell that is not mined, this number shows the number of mined neighbors.
+    //the returned grid will contain the full answer
+    public int[][] setNumbers() {
+        grid = setMines();
+
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if (grid[i][j] != 99) {
+                    int[] position = position(i, j);
+                    int minedNeighbors = 0;
+                    for (int x = position[0]; x <= position[1]; x++) {
+                        for (int y = position[2]; y <= position[3]; y++) {
+                            if (grid[x][y] == 99) {minedNeighbors++;}
+                        }
+                    }
+                    grid[i][j] = minedNeighbors;
+                }
+            }
+        }
+        return grid;
+    }
+
+    //provide the start and stop position to count the mined neighbors
+    public int[] position(int i, int j) {
+
+        int r_start, r_stop, c_start, c_stop;
+
+        if (i == 0) {r_start = 0;}
+        else {r_start = i - 1;}
+
+        if (i + 1 == ROWS) {r_stop = i;}
+        else {r_stop = i + 1;}
+
+        if (j == 0) {c_start = 0;}
+        else {c_start = j - 1;}
+
+        if (j + 1 == COLUMNS) {c_stop = j;}
+        else {c_stop = j + 1;}
+
+        int[] position = {r_start, r_stop, c_start, c_stop};
+        return position;
+    }
+
+    //display the full answer board
+    public void showAnswer() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                Integer n = grid[i][j];
+                int space = 4 - n.toString().length();
+                String s = "";
+                for (int k = 0; k < space; k++) { s = s + " "; }
+                System.out.print(grid[i][j] + s);
+            }
+            System.out.println();
+        }
+        //print a line to separate different grid in the console
+        for(int i = 0; i < 50; i++) {
+            System.out.print("-");
+        }
+        System.out.println();
+    }
+
+    //determine Win, Lose or Not Finished
+    public String gameState(int r_index, int c_index) {
+        // Open a mine - Lose
+        if (grid[r_index][c_index] == 99) {return "Lose";}
+        // Open all - Win
+        else if (isFull() == true) {return "Win";}
+        else {return "Undecided";}
+    }
+
+    //helper function for gameState method - check whether or not all safe cells are open
+    public boolean isFull() {
+        int open_not_mines = 0;
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                Cell cell = matrix[i][j];
+                if (cell.isReveal() == true && cell.getValue() != "99") {open_not_mines++;}
+            }
+        }
+        return open_not_mines == ALL_OPEN;
+    }
+
+    //prevent player from opening any cells, use when the game ends
+    public void disableOpen() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                matrix[i][j].setReveal(true);
+            }
+        }
+    }
+
+    //when player opens a "0" cell, extends as far as possible (stop when reaching bombs)
+    //the open area is covered with numeric cells
+    public void extendBlank(int i, int j) {
+        int[][] dirs = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+        for (int[] d : dirs) {
+            int newI = i + d[0];
+            int newJ = j + d[1];
+            //the following line is recursion's base-case, i.e. stop the recursion when
+            //can't find any adjacent "0" cells
+            if (newI >=0 && newI < ROWS && newJ >= 0 && newJ < COLUMNS &&
+                    grid[newI][newJ] == 0 && matrix[newI][newJ].isReveal() == false) {
+                Cell cell = matrix[newI][newJ];
+                cell.setValue("0");
+                cell.setReveal(true);
+                repaint();
+                for (int[] other_d : dirs) {
+                    int next_newI = newI + other_d[0];
+                    int next_newJ = newJ + other_d[1];
+                    if (next_newI >=0 && next_newI < ROWS && next_newJ >= 0 && next_newJ < COLUMNS &&
+                            grid[next_newI][next_newJ] != 0 && grid[next_newI][next_newJ] != 99 &&
+                            matrix[next_newI][next_newJ].isReveal() == false) {
+                        Cell other_cell = matrix[next_newI][next_newJ];
+                        Integer value = grid[next_newI][next_newJ];
+                        other_cell.setValue(value.toString());
+                        other_cell.setReveal(true);
+                        repaint();
+                    }
+                }
+                extendBlank(newI, newJ);
+            }
+        }
+    }
+
+    //open all cells having bomb
+    //when player loses, reveal all positions with mine
+    public void revealAllMines() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                Integer v = grid[i][j];
+                if (v == 99) {
+                    Cell c = matrix[i][j];
+                    c.setValue(v.toString());
+                    repaint();
+                }
+            }
+        }
+    }
+}
