@@ -1,4 +1,5 @@
 public class Node {
+
 	Object data;
 	Node left, right;
 	
@@ -7,4 +8,5 @@ public class Node {
 		left = null;
 		right = null;
 	}
+
 }
