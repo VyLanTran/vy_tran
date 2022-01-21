@@ -1,0 +1,110 @@
+import java.util.ArrayList;
+
+public class LinkedList {
+
+	Node head;
+	
+	public LinkedList() {
+		head = null;
+	}
+	
+	//push a new node at the beginning of the linked list
+	public void push(Object value) {
+		Node new_node = new Node(value);
+		new_node.next = head;
+		head = new_node;
+	}
+	
+	public int length() {
+		Node cur = head;
+		int count = 0;
+		while (cur != null) {
+			cur = cur.next;
+			count++;
+		}
+		return count;
+	}
+	
+	public String display() {
+		String text = "";
+		Node cur = head;
+		while (cur != null) {
+			text += cur.data + "\s";
+			cur = cur.next;
+		}
+		return text;
+	}
+	
+	public void reverseLinkedList() {
+		Node prev = null;
+		Node next_temp = null;
+		Node cur = head;
+		
+		while (cur != null) {
+			next_temp = cur.next;
+			cur.next = prev;
+			prev  = cur;
+			cur = next_temp;
+		}
+		
+		head = prev;
+	}
+	
+	public Node middleNode() {
+		Node slow = head, fast = head;
+		while (fast != null && fast.next != null) {
+			fast = fast.next.next;
+			slow = slow.next;
+		}
+		return slow;
+	}
+	
+	public Node nToLast(int n) {
+		Node slow = head, fast = head;
+		int diff = n - 1;
+		while (diff > 0) {
+			fast = fast.next;
+			diff--;
+		}
+		while (fast != null && fast.next != null) {
+			fast = fast.next;
+			slow = slow.next;
+		}
+		
+		System.out.println("The " + n + "th to the last element is: " + slow.data);
+		return slow;
+	}
+	
+	//2 ways to detect loop in the linked list
+	//1. fast takes a larger step than slow does so if there is a loop, slow and fast will
+	// eventually meet, but the longer the loop, the more time it takes for them to meet
+	/*public boolean hasLoop() {
+		if (head == null) return false;
+		Node slow = head, fast = head;
+		while (true) {
+			slow = slow.next;
+			if (fast.next != null) fast = fast.next.next;
+			else return false;
+			if (slow == null || fast == null) return false;
+			if (slow == fast) return true;
+		}
+	}*/
+	
+	//2.
+	public boolean hasLoop() {
+		if (head == null) return false;
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		Node cur = head;
+		Node next = null;
+		
+		while (cur != null) {
+			nodes.add(cur);
+			next = cur.next;
+			if (nodes.contains(next)) {
+				return true;
+			}
+			cur = next;
+		}
+		return false;
+	}
+}
