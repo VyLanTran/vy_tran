@@ -1,0 +1,64 @@
+public class Main {
+
+	public static void main(String[] args) {
+		/*BinaryTree tree = new BinaryTree();
+		tree.root = new Node(1);
+		tree.root.left = new Node(2);
+		tree.root.right = new Node(3);
+		tree.root.left.left = new Node(4);
+		tree.root.left.right = new Node(5);
+		tree.root.right.left = new Node(6);
+		tree.root.right.right = new Node(7);
+		
+		System.out.println("Pre-order traversal: " + tree.preorderTraversal());
+		System.out.println("In-order traversal: " + tree.inorderTraversal());
+		System.out.println("Post-order traversal: " + tree.postorderTraversal());*/
+
+		/*BinaryTree exp1 = new BinaryTree();
+		exp1.root = new Node("+");
+		exp1.root.left = new Node("-");
+		exp1.root.right = new Node("/");
+		exp1.root.left.left = new Node(7);
+		exp1.root.left.right = new Node("+");
+		exp1.root.right.left = new Node(9);
+		exp1.root.right.right = new Node(3);
+		exp1.root.left.right.left = new Node(4);
+		exp1.root.left.right.right = new Node(3);
+		
+		System.out.println("Expression without parentheses: " + exp1.inorderTraversal());
+		System.out.println("Expression parentheses: " + exp1.inorderTraversalParentheses());
+			
+		System.out.println(exp1.inorderTraversalParentheses() + " = " + exp1.evaluateExp());*/
+
+		/*BinaryTree tree = new BinaryTree();
+		tree.root = new Node("A");
+		tree.root.left = new Node("B");
+		tree.root.right = new Node("C");
+		tree.root.left.left = new Node("D");
+		tree.root.left.right = new Node("E");
+		tree.root.right.left = new Node("F");
+		tree.root.right.right = new Node("G");
+		tree.root.left.right.left = new Node("H");
+		tree.root.left.right.right = new Node("I");
+		System.out.println("Euler tour traversal: " + tree.eulerTraversal());*/
+		
+		
+		BinaryTree tree = new BinaryTree();
+//		tree.root = new Node("1");
+//		tree.root.left = new Node("2");
+//		tree.root.right = new Node("3");
+//		tree.root.left.left = new Node("4");
+//		tree.root.left.right = new Node("5");
+//		tree.root.right.left = new Node("6");
+//		tree.root.right.right = new Node("7");
+//		tree.root.right.left.right = new Node("8");
+		
+		tree.root = new Node("3");
+		tree.root.left = new Node("6");
+		tree.root.right = new Node("7");
+		tree.root.right.right = new Node("8");
+		System.out.println("Euler tour traversal: " + tree.eulerTraversal());
+		
+	}
+
+}
