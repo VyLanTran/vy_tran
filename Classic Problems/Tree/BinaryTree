@@ -1,7 +1,189 @@
+import java.util.ArrayList;
+
+import LinkedList_Stack_Queue.StackFromLinkedList;
+
 public class BinaryTree {
+
 	Node root;
+	StackFromLinkedList pre_stk;
+	StackFromLinkedList in_stk;
+	StackFromLinkedList post_stk;
+
 	
 	public BinaryTree() {
 		root = null;
+		pre_stk = new StackFromLinkedList();
+		in_stk = new StackFromLinkedList();
+		post_stk = new StackFromLinkedList();
+
 	}
+	
+	public BinaryTree makeBinaryTree(Node root, Node left, Node right) {
+		BinaryTree tree = new BinaryTree();
+		tree.root = root;
+		tree.root.left = left;
+		tree.root.right = right;
+		return tree;
+	}
+	
+	public String preorderTraversal() {
+		String text = "";
+		preorderPush(root);
+		while (pre_stk.top != null) {
+			text += pre_stk.peek() + "\s";
+			pre_stk.pop();
+		}
+		return text;
+	}
+	
+	public void preorderPush(Node node) {
+		if (node == null) return;
+		preorderPush(node.right);
+		preorderPush(node.left);
+		pre_stk.push(node.data);
+	}
+	
+	public String inorderTraversal() {
+		String text = "";
+		inorderPush(root);
+		while (in_stk.top != null) {
+			text += in_stk.peek() + "\s";
+			in_stk.pop();
+		}
+		return text;
+	}
+	
+	public void inorderPush(Node node) {
+		if (node == null) return;
+		inorderPush(node.right);
+		in_stk.push(node.data);
+		inorderPush(node.left);
+	}
+	
+	public String postorderTraversal() {
+		String text = "";
+		postorderPush(root);
+		while (post_stk.top != null) {
+			text += post_stk.peek() + "\s";
+			post_stk.pop();
+		}
+		return text;
+	}
+	
+	public void postorderPush(Node node) {
+		if (node == null) return;
+		post_stk.push(node.data);
+		postorderPush(node.right);
+		postorderPush(node.left);
+	}
+	
+	public String inorderTraversalParentheses() {
+		String text = "";
+		inorderPushParentheses(root);
+		while (in_stk.top != null) {
+			text += in_stk.peek() + "\s";
+			in_stk.pop();
+		}
+		StringBuilder sb = new StringBuilder(text);
+		sb.deleteCharAt(0);	//delete the first (
+		sb.deleteCharAt(sb.length() - 1);	//delete the last )
+		sb.deleteCharAt(sb.length() - 1);
+		return sb.toString();
+	}
+	
+	public void inorderPushParentheses(Node node) {
+		if (node.right == null || node.left == null) {
+			in_stk.push(node.data);
+			return;
+		}
+		in_stk.push(")");
+		inorderPushParentheses(node.right);
+		in_stk.push(node.data);
+		inorderPushParentheses(node.left);
+		in_stk.push("(");
+	}
+	
+	public int inorderExp(Node node) {
+		if (node.left == null && node.right == null) {
+			if (node.data instanceof String) {
+				return Integer.parseInt((String)node.data);
+			}
+			return (int)(node.data);
+		}
+		int leftResult = inorderExp(node.left);
+		int rightResult = inorderExp(node.right);
+		
+		if (node.data == "+") {
+			return leftResult + rightResult;
+		}
+		if (node.data == "-") {
+			return leftResult - rightResult;
+		}
+		if (node.data == "*") {
+			return leftResult * rightResult;
+		}
+		return leftResult / rightResult;
+	}
+	
+	public int evaluateExp() {
+		return inorderExp(root);
+	}
+	
+	public String eulerRoute(Node node) {
+		if (node.left == null && node.right == null) {
+			if (node.data instanceof Integer) return String.valueOf(node.data);
+			return (String) node.data;
+		}
+
+		if (node.left != null && node.right == null) {
+			Node leftPart = new Node(eulerRoute(node.left));
+			return makeBinaryTree(node, leftPart, null).inorderTraversal() +
+					makeBinaryTree(null, null, null).postorderTraversal();
+		}
+		if (node.left == null && node.right != null) {
+			Node rightPart = new Node(eulerRoute(node.right));
+			return	makeBinaryTree(node, null, rightPart).inorderTraversal() +
+					makeBinaryTree(node, null, null).postorderTraversal();
+		}
+		Node leftPart = new Node(eulerRoute(node.left));
+		Node rightPart = new Node(eulerRoute(node.right));
+		return makeBinaryTree(node, null, null).preorderTraversal() +
+				makeBinaryTree(node, leftPart, rightPart).inorderTraversal() +
+				makeBinaryTree(node, null, null).postorderTraversal();
+		
+	}
+	
+	public String eulerTraversal() {
+		return eulerRoute(root);
+	}
+	
+	//2nd approach - from GeeksForGeeks
+	/*public ArrayList<String> eulerTree(Node root, ArrayList<String> eulerList) {
+		//whenever visiting a node, add it to the list
+		if (root.data instanceof Integer) eulerList.add(String.valueOf(root.data));
+		else eulerList.add((String) root.data);
+		
+		if (root.left != null) {
+			eulerList = eulerTree(root.left, eulerList);
+			//after going all the way down to the farthest leaves, always wrapping up with the root
+			eulerList.add((String) root.data);
+		}
+		if (root.right != null) {
+			eulerList = eulerTree(root.right, eulerList);
+			eulerList.add((String) root.data);
+		}
+		return eulerList;
+	}
+	
+	public String eulerTraversal() {
+		String text = "";
+		ArrayList<String> euler = new ArrayList<String>();
+		euler = eulerTree(root, euler);
+		for (int i = 0; i < euler.size(); i++) {
+			text += euler.get(i) + " ";
+		}
+		return text;
+	}*/
+	
 }
+
