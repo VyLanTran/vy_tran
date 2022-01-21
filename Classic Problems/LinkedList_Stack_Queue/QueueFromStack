@@ -1,0 +1,34 @@
+public class QueueFromStack {
+
+	StackFromLinkedList main_qu;
+	StackFromLinkedList helper_qu;
+
+	public QueueFromStack() {
+		main_qu = new StackFromLinkedList();
+		helper_qu = new StackFromLinkedList();
+	}
+	
+	public void enqueue(Object value) {
+		while (main_qu.top != null) {
+			helper_qu.push(main_qu.peek());
+			main_qu.pop();
+		}
+		main_qu.push(value);
+		while (helper_qu.top != null) {
+			main_qu.push(helper_qu.peek());
+			helper_qu.pop();
+		}
+	}
+	
+	public void dequeue() {
+		main_qu.pop();
+	}
+	
+	public Object peek() {
+		return main_qu.peek();
+	}
+	
+	public String display() {
+		return main_qu.display();
+	}
+}
