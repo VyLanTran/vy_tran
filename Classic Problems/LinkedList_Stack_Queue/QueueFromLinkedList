@@ -1,0 +1,41 @@
+public class QueueFromLinkedList {
+
+	Node top, bottom;
+	
+	public QueueFromLinkedList() {
+		top = null;
+		bottom = null;
+	}
+	
+	public void enqueue(Object value) {
+		Node new_node = new Node(value);
+		if (top == null) {
+			top = new_node;
+			bottom = new_node;
+		}
+		else {
+			bottom.next = new_node;
+			bottom = new_node;
+		}
+	}
+	
+	public void dequeue() {
+		if (top == null) return;
+		top = top.next;
+		if (top == null) bottom = null;
+	}
+	
+	public Object peek() {
+		return top.data;
+	}
+	
+	public String display() {
+		String text = "";
+		Node cur = top;
+		while (cur != null) {
+			text += cur.data + "\s";
+			cur = cur.next;
+		}
+		return text;
+	}
+}
