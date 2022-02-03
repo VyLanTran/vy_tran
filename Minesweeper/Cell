@@ -1,5 +1,6 @@
 public class Cell {
-	private int x;
+
+    private int x;
     private int y;
     private String value;
     boolean reveal = false;
