@@ -26,11 +26,8 @@ public class Board extends JPanel {
 
     Screen screen = new Screen();
 
-    private ImageIcon orgBlock;
-
     public Board() {
-        orgBlock = new ImageIcon("org_block.jpg");
-
+    
         this.createBoard();
 
         addMouseListener(new MouseAdapter() {
@@ -94,7 +91,6 @@ public class Board extends JPanel {
                             repaint();
                             countdownMines++;
                         }
-                        //setCountdownMines(countdownMines);
 
                     }
                 }
@@ -145,7 +141,6 @@ public class Board extends JPanel {
                     g2d.fillRect(x, y, UNIT_WIDTH, UNIT_HEIGHT);
                     g2d.setColor(Color.BLACK);
                     drawBorders(g, x, y);
-//                	draw(screen, g, orgBlock, x, y);
                 }
 
                 if (value != null) {
@@ -158,7 +153,6 @@ public class Board extends JPanel {
                         g2d.setStroke(new BasicStroke(1.0f));
                         g2d.setFont(new Font("TimesRoman", Font.PLAIN, 14));
                         g2d.drawString(value, x + UNIT_WIDTH / 2 - 7, y + UNIT_HEIGHT / 2 + 6);
-//                    	draw(this, g, orgBlock, x, y);
                     }
 
                     //revealing a safe cell
@@ -281,10 +275,7 @@ public class Board extends JPanel {
             System.out.println();
         }
         //print a line to separate different grid in the console
-        for(int i = 0; i < 50; i++) {
-            System.out.print("-");
-        }
-        System.out.println();
+            System.out.println("---------------------------------------------------------------------------------");
     }
 
     //determine Win, Lose or Not Finished
