@@ -65,8 +65,8 @@ public class Screen extends Component implements ActionListener, MouseListener {
         restartButton.setBorder(BorderFactory.createBevelBorder(1));
         restartButton.setOpaque(true);
         restartButton.setHorizontalAlignment(JTextField.CENTER);
-		restartButton.setFocusable(true);
-		restartButton.addActionListener(screen);
+	restartButton.setFocusable(true);
+	restartButton.addActionListener(screen);
         restartButton.setText("Restart");
 
         //label to count time passed
@@ -91,11 +91,6 @@ public class Screen extends Component implements ActionListener, MouseListener {
 
         frame.setVisible(true);
     }
-
-    public void paint(Graphics g) {
-
-    }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
