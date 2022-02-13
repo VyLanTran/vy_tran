@@ -1,5 +1,9 @@
-import java.util.ArrayList;
+package Tree;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import LinkedList_Stack_Queue.QueueFromLinkedList;
 import LinkedList_Stack_Queue.StackFromLinkedList;
 
 public class BinaryTree {
@@ -8,14 +12,16 @@ public class BinaryTree {
 	StackFromLinkedList pre_stk;
 	StackFromLinkedList in_stk;
 	StackFromLinkedList post_stk;
-
+	StackFromLinkedList bf_stk;
+	HashMap<Object, Integer> levels;
 	
 	public BinaryTree() {
 		root = null;
 		pre_stk = new StackFromLinkedList();
 		in_stk = new StackFromLinkedList();
 		post_stk = new StackFromLinkedList();
-
+		bf_stk = new StackFromLinkedList();
+		levels = new HashMap<Object, Integer>();
 	}
 	
 	public BinaryTree makeBinaryTree(Node root, Node left, Node right) {
@@ -185,5 +191,93 @@ public class BinaryTree {
 		return text;
 	}*/
 	
-}
+	public String breadthFirstTraversal() {
+		String text = "";
+		breadthFirstPush();
+		while (bf_stk.top != null) {
+			text += bf_stk.peek() + "\s";
+			bf_stk.pop();
+		}
+		return text;
+	}
+	
+	public void breadthFirstPush() {
+		int height = height(root);
+		for (int i = height; i >= 0; i--) {
+			levelPush(root, i);
+			for (Object data : levels.keySet()) {
+				if (levels.get(data) == -1) {
+					levels.put(data, i);
+				}
+			}
+		}
+	}
+	
+	public void levelPush(Node node, int lv) {
+		if (node == null) return;
+		if (lv == 0) {
+			bf_stk.push(node.data);
+			levels.put(node.data, -1);	//-1: the level of each node is undefined at first
+		}
+		else if (lv > 0) {
+			levelPush(node.right, lv - 1);
+			levelPush(node.left, lv - 1);
+		}
+	}
+	
+	public int height(Node node){
+        if (node == null || (node.left == null && node.right == null)) 
+            return 0;
+        else {
+            int lheight = height(node.left);
+            int rheight = height(node.right);
+ 
+            if (lheight > rheight)
+                return (lheight + 1);
+            else
+                return (rheight + 1);
+        }
+    }
 
+	public int treeHeight() {
+		return height(root);
+	}
+	
+	public int getLevel(Object data) {
+		if (! levelMap().containsKey(data.toString())) return -1;
+		return levelMap().get(data.toString());
+	}
+	
+	public HashMap<Object, Integer> levelMap() {
+		breadthFirstPush();
+		return levels;
+	}
+	
+	public int levelSize(int level) {
+		HashMap<Object, Integer> map = levelMap();
+		int size = 0;
+		for (Object data : map.keySet()) {
+			if (map.get(data) == level) size++;
+		}
+		return size;
+	}
+	
+	public int size() {
+		int size = 0;
+		for (int i = 0; i <= treeHeight(); i++) {
+			size += levelSize(i);
+		}
+		return size;
+	}
+	
+	public boolean isComplete() {
+		int i = 0;
+		while (i <= treeHeight()) {
+			if (levelSize(i) != Math.pow(2, i)) {
+				return false;
+			}
+			i++;
+		}
+		return true;
+	}
+}
