@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
 
 import LinkedList_Stack_Queue.QueueFromLinkedList;
@@ -11,7 +11,8 @@ public class BinaryTree {
 	StackFromLinkedList in_stk;
 	StackFromLinkedList post_stk;
 	StackFromLinkedList bf_stk;
-	HashMap<Object, Integer> levels;
+	HashMap<Object, Integer> levels;	// pair each node's data with its level
+	StackFromLinkedList child_stk;
 	
 	public BinaryTree() {
 		root = null;
@@ -20,6 +21,7 @@ public class BinaryTree {
 		post_stk = new StackFromLinkedList();
 		bf_stk = new StackFromLinkedList();
 		levels = new HashMap<Object, Integer>();
+		child_stk = new StackFromLinkedList();
 	}
 	
 	public BinaryTree makeBinaryTree(Node root, Node left, Node right) {
@@ -203,6 +205,8 @@ public class BinaryTree {
 		int height = height(root);
 		for (int i = height; i >= 0; i--) {
 			levelPush(root, i);
+			
+			// the following for-loop is for a different attribute: to keep track of each node's level
 			for (Object data : levels.keySet()) {
 				if (levels.get(data) == -1) {
 					levels.put(data, i);
@@ -212,9 +216,13 @@ public class BinaryTree {
 	}
 	
 	public void levelPush(Node node, int lv) {
+		// helper function of breadthFirstPush
+		// push nodes into the stack in the order lowest-highest level
+		// in each level, right-most - left-most nodes
 		if (node == null) return;
 		if (lv == 0) {
 			bf_stk.push(node.data);
+			child_stk.push(childNum(node));	// for decorating each node with its' number of descendants
 			levels.put(node.data, -1);	//-1: the level of each node is undefined at first
 		}
 		else if (lv > 0) {
@@ -224,6 +232,7 @@ public class BinaryTree {
 	}
 	
 	public int height(Node node){
+		// return height of a node
         if (node == null || (node.left == null && node.right == null)) 
             return 0;
         else {
@@ -238,20 +247,24 @@ public class BinaryTree {
     }
 
 	public int treeHeight() {
+		// return tree's height
 		return height(root);
 	}
 	
 	public int getLevel(Object data) {
+		// return the level of "data"
 		if (! levelMap().containsKey(data.toString())) return -1;
 		return levelMap().get(data.toString());
 	}
 	
 	public HashMap<Object, Integer> levelMap() {
+		// return the hash map that pairs each node's data with its level in the tree
 		breadthFirstPush();
 		return levels;
 	}
 	
 	public int levelSize(int level) {
+		// return the number of nodes in a specific level
 		HashMap<Object, Integer> map = levelMap();
 		int size = 0;
 		for (Object data : map.keySet()) {
@@ -261,6 +274,7 @@ public class BinaryTree {
 	}
 	
 	public int size() {
+		// return tree's size
 		int size = 0;
 		for (int i = 0; i <= treeHeight(); i++) {
 			size += levelSize(i);
@@ -268,7 +282,7 @@ public class BinaryTree {
 		return size;
 	}
 	
-	public boolean isComplete() {
+	/*public boolean isComplete() {
 		int i = 0;
 		while (i <= treeHeight()) {
 			if (levelSize(i) != Math.pow(2, i)) {
@@ -277,5 +291,34 @@ public class BinaryTree {
 			i++;
 		}
 		return true;
+	}*/
+	
+	// Decorate each node with number of descendants
+	public String printDescendants() {
+		String s = "";
+		while (child_stk.top != null) {
+			s += child_stk.peek() + "\s";
+			child_stk.pop();
+		}
+		return s;
+	}
+	
+	public int childNum(Node node) {
+		// return node's number of descendants
+		int leftNum = 0;
+		int rightNum = 0;
+		if (node.left != null) {
+			leftNum =  1 + childNum(node.left);
+		}
+		else {
+			leftNum = 0;
+		}
+		if (node.right != null) {
+			rightNum = 1 + childNum(node.right);
+		}
+		else {
+			rightNum = 0;
+		}
+		return leftNum + rightNum;
 	}
 }
