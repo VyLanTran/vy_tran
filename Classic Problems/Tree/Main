@@ -1,18 +1,18 @@
 public class Main {
 
 	public static void main(String[] args) {
-		BinaryTree tree = new BinaryTree();
-		tree.root = new Node(1);
-		tree.root.left = new Node(2);
-		tree.root.right = new Node(3);
-		tree.root.left.left = new Node(4);
-		tree.root.left.right = new Node(5);
-		tree.root.right.left = new Node(6);
-		tree.root.right.right = new Node(7);
+		BinaryTree tree1 = new BinaryTree();
+		tree1.root = new Node(1);
+		tree1.root.left = new Node(2);
+		tree1.root.right = new Node(3);
+		tree1.root.left.left = new Node(4);
+		tree1.root.left.right = new Node(5);
+		tree1.root.right.left = new Node(6);
+		tree1.root.right.right = new Node(7);
 		
-		System.out.println("Pre-order traversal: " + tree.preorderTraversal());
-		System.out.println("In-order traversal: " + tree.inorderTraversal());
-		System.out.println("Post-order traversal: " + tree.postorderTraversal());
+		System.out.println("Pre-order traversal: " + tree1.preorderTraversal());
+		System.out.println("In-order traversal: " + tree1.inorderTraversal());
+		System.out.println("Post-order traversal: " + tree1.postorderTraversal());
 
 		System.out.println("******************************************************");
 		
@@ -34,44 +34,47 @@ public class Main {
 		
 		System.out.println("******************************************************");
 
-		/*BinaryTree tree = new BinaryTree();
-		tree.root = new Node("A");
-		tree.root.left = new Node("B");
-		tree.root.right = new Node("C");
-		tree.root.left.left = new Node("D");
-		tree.root.left.right = new Node("E");
-		tree.root.right.left = new Node("F");
-		tree.root.right.right = new Node("G");
-		tree.root.left.right.left = new Node("H");
-		tree.root.left.right.right = new Node("I");*/
+		BinaryTree tree2 = new BinaryTree();
+		tree2.root = new Node("A");
+		tree2.root.left = new Node("B");
+		tree2.root.right = new Node("C");
+		tree2.root.left.left = new Node("D");
+		tree2.root.left.right = new Node("E");
+		tree2.root.right.left = new Node("F");
+		tree2.root.right.right = new Node("G");
+		tree2.root.left.right.left = new Node("H");
+		tree2.root.left.right.right = new Node("I");
 		
-		System.out.println("Euler tour traversal: " + tree.eulerTraversal());
+		System.out.println("Euler tour traversal: " + tree2.eulerTraversal());
 		
 		System.out.println("******************************************************");
 		
 		
-		/*BinaryTree tree = new BinaryTree();
-		tree.root = new Node("1");
-		tree.root.left = new Node("2");
-		tree.root.right = new Node("3");
-		tree.root.left.left = new Node("4");
-		tree.root.left.right = new Node("5");
-		tree.root.right.left = new Node("6");
-		tree.root.right.right = new Node("7");
-		tree.root.right.left.right = new Node("8");*/
+		BinaryTree tree3 = new BinaryTree();
+		tree3.root = new Node("1");
+		tree3.root.left = new Node("2");
+		tree3.root.right = new Node("3");
+		tree3.root.left.left = new Node("4");
+		tree3.root.left.right = new Node("5");
+		tree3.root.right.left = new Node("6");
+		tree3.root.right.right = new Node("7");
+		tree3.root.right.left.right = new Node("8");
 	
 		
-//		System.out.println("Euler tour traversal: " + tree.eulerTraversal());
+//		System.out.println("Euler tour traversal: " + tree3.eulerTraversal());
 		
-		System.out.println("Breadth first traversal: " + tree.breadthFirstTraversal());
+		System.out.println("Breadth first traversal: " + tree3.breadthFirstTraversal());
+		System.out.println("Number of descendants: " + tree3.printDescendants());
 
-//		System.out.println(tree.levelMap());
-//		System.out.println(tree.getLevel(7));
-//		System.out.println(tree.levelSize(3));
-//		System.out.println(tree.size());
+//		System.out.println(tree3.levelMap());
+//		System.out.println(tree3.getLevel(7));
+//		System.out.println(tree3.levelSize(3));
+//		System.out.println(tree3.size());
 		
-		System.out.println(tree.isComplete());
+//		System.out.println(tree3.isComplete());
+		System.out.println("******************************************************");
+		
+		
 	}
 
 }
-
