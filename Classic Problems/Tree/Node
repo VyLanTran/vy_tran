@@ -1,12 +1,15 @@
+package Tree;
+
 public class Node {
 
 	Object data;
-	Node left, right;
+	Node left, right, next;
 	
 	public Node(Object data) {
 		this.data = data;
 		left = null;
 		right = null;
+		next = null;
 	}
 
 }
