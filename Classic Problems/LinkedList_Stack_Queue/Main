@@ -1,3 +1,5 @@
+package LinkedList_Stack_Queue;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -42,7 +44,7 @@ public class Main {
 		
 		stk_ll.pop();
 		System.out.println("After pop: " + stk_ll.display());
-		System.out.println("Top element is: " + String.valueOf(stk_ll.peek()));
+		System.out.println("Top element is: " + stk_ll.peek().data);
 		
 		System.out.println("-----------------------------------------------------");
 		System.out.println("QUEUE FROM LINKED LIST TEST");
@@ -56,7 +58,7 @@ public class Main {
 		qu_ll.dequeue();
 		System.out.println("After dequeue: " + qu_ll.display());
 	
-		System.out.println("Top element is: " + String.valueOf(qu_ll.peek()));
+		System.out.println("Top element is: " + qu_ll.peek().data);
 		
 		System.out.println("-----------------------------------------------------");
 		System.out.println("STACK FROM QUEUE TEST");
@@ -70,7 +72,7 @@ public class Main {
 		stk_qu.pop();
 		System.out.println("After pop: " + stk_qu.display());
 		
-		System.out.println("Top element is: " + String.valueOf(stk_qu.peek()));
+		System.out.println("Top element is: " + stk_qu.peek().data);
 		
 		System.out.println("-----------------------------------------------------");
 		System.out.println("QUEUE FROM STACK TEST");
@@ -84,7 +86,7 @@ public class Main {
 		qu_stk.dequeue();
 		System.out.println("After dequeue: " + qu_stk.display());
 		
-		System.out.println("Top element is: " + String.valueOf(qu_stk.peek()));
+		System.out.println("Top element is: " + qu_stk.peek().data);
 
 	}
 
