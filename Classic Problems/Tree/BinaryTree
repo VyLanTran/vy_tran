@@ -1,8 +1,6 @@
-//import java.util.ArrayList;
-import java.util.HashMap;
+package Tree;
 
-import LinkedList_Stack_Queue.QueueFromLinkedList;
-import LinkedList_Stack_Queue.StackFromLinkedList;
+import java.util.HashMap;
 
 public class BinaryTree {
 
@@ -32,11 +30,13 @@ public class BinaryTree {
 		return tree;
 	}
 	
-	public String preorderTraversal() {
+	// RECURSIVE APPROACH
+	
+	public String recur_preorder_traversal() {
 		String text = "";
 		preorderPush(root);
 		while (pre_stk.top != null) {
-			text += pre_stk.peek() + "\s";
+			text += pre_stk.peek().data + "\s";
 			pre_stk.pop();
 		}
 		return text;
@@ -49,11 +49,11 @@ public class BinaryTree {
 		pre_stk.push(node.data);
 	}
 	
-	public String inorderTraversal() {
+	public String recur_inorder_traversal() {
 		String text = "";
 		inorderPush(root);
 		while (in_stk.top != null) {
-			text += in_stk.peek() + "\s";
+			text += in_stk.peek().data + "\s";
 			in_stk.pop();
 		}
 		return text;
@@ -66,11 +66,11 @@ public class BinaryTree {
 		inorderPush(node.left);
 	}
 	
-	public String postorderTraversal() {
+	public String recur_postorder_traversal() {
 		String text = "";
 		postorderPush(root);
 		while (post_stk.top != null) {
-			text += post_stk.peek() + "\s";
+			text += post_stk.peek().data + "\s";
 			post_stk.pop();
 		}
 		return text;
@@ -83,17 +83,66 @@ public class BinaryTree {
 		postorderPush(node.left);
 	}
 	
+	// ITERATIVE APPROACH
+	public String iter_preorder_traversal() {
+		return iter_preorder_traversal(root);
+	}
+	
+	public String iter_preorder_traversal(Node root) {
+		if (root == null) return "";
+		String s = "";
+		StackFromLinkedList stk = new StackFromLinkedList();
+		stk.push(root);
+		while (!stk.is_empty()) {
+			Node node = stk.peek();
+			s += node.data + "\s";
+			stk.pop();
+			if (node.right != null) {
+				stk.push(node.right);
+			}
+			if (node.left != null) {
+				stk.push(node.left);
+			}
+		}
+		return s;
+	}
+	
+	public String iter_inorder_traversal() {
+		return iter_inorder_traversal(root);
+	}
+	
+	public String iter_inorder_traversal(Node root) {
+		if (root == null) return "";
+		String s = "";
+		StackFromLinkedList stk = new StackFromLinkedList();
+		Node cur = root;
+		
+		while (cur != null || !stk.is_empty()) {
+			// go down to the left most node
+			while (cur != null) {
+				stk.push(cur);
+				cur = cur.left;
+			}
+			cur = stk.peek();
+			s += cur.data + "\s";
+			stk.pop();
+			
+			// now go to the right side
+			cur = cur.right;
+		}
+		return s;
+	}
+	
 	public String inorderTraversalParentheses() {
 		String text = "";
 		inorderPushParentheses(root);
 		while (in_stk.top != null) {
-			text += in_stk.peek() + "\s";
+			text += in_stk.peek().data + "\s";
 			in_stk.pop();
 		}
 		StringBuilder sb = new StringBuilder(text);
-		sb.deleteCharAt(0);	//delete the first (
 		sb.deleteCharAt(sb.length() - 1);	//delete the last )
-		sb.deleteCharAt(sb.length() - 1);
+		sb.deleteCharAt(0);	//delete the first (
 		return sb.toString();
 	}
 	
@@ -143,19 +192,19 @@ public class BinaryTree {
 
 		if (node.left != null && node.right == null) {
 			Node leftPart = new Node(eulerRoute(node.left));
-			return makeBinaryTree(node, leftPart, null).inorderTraversal() +
-					makeBinaryTree(null, null, null).postorderTraversal();
+			return makeBinaryTree(node, leftPart, null).recur_inorder_traversal() +
+					makeBinaryTree(null, null, null).recur_postorder_traversal();
 		}
 		if (node.left == null && node.right != null) {
 			Node rightPart = new Node(eulerRoute(node.right));
-			return	makeBinaryTree(node, null, rightPart).inorderTraversal() +
-					makeBinaryTree(node, null, null).postorderTraversal();
+			return	makeBinaryTree(node, null, rightPart).recur_inorder_traversal() +
+					makeBinaryTree(node, null, null).recur_postorder_traversal();
 		}
 		Node leftPart = new Node(eulerRoute(node.left));
 		Node rightPart = new Node(eulerRoute(node.right));
-		return makeBinaryTree(node, null, null).preorderTraversal() +
-				makeBinaryTree(node, leftPart, rightPart).inorderTraversal() +
-				makeBinaryTree(node, null, null).postorderTraversal();
+		return makeBinaryTree(node, null, null).recur_preorder_traversal() +
+				makeBinaryTree(node, leftPart, rightPart).recur_inorder_traversal() +
+				makeBinaryTree(node, null, null).recur_postorder_traversal();
 		
 	}
 	
@@ -195,7 +244,7 @@ public class BinaryTree {
 		String text = "";
 		breadthFirstPush();
 		while (bf_stk.top != null) {
-			text += bf_stk.peek() + "\s";
+			text += bf_stk.peek().data + "\s";
 			bf_stk.pop();
 		}
 		return text;
@@ -297,7 +346,7 @@ public class BinaryTree {
 	public String printDescendants() {
 		String s = "";
 		while (child_stk.top != null) {
-			s += child_stk.peek() + "\s";
+			s += child_stk.peek().data + "\s";
 			child_stk.pop();
 		}
 		return s;
