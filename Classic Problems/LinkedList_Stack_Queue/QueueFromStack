@@ -1,3 +1,5 @@
+package LinkedList_Stack_Queue;
+
 public class QueueFromStack {
 
 	StackFromLinkedList main_qu;
@@ -9,13 +11,13 @@ public class QueueFromStack {
 	}
 	
 	public void enqueue(Object value) {
-		while (main_qu.top != null) {
-			helper_qu.push(main_qu.peek());
+		while (!main_qu.is_empty()) {
+			helper_qu.push(main_qu.peek().data);
 			main_qu.pop();
 		}
 		main_qu.push(value);
-		while (helper_qu.top != null) {
-			main_qu.push(helper_qu.peek());
+		while (!helper_qu.is_empty()) {
+			main_qu.push(helper_qu.peek().data);
 			helper_qu.pop();
 		}
 	}
@@ -24,7 +26,7 @@ public class QueueFromStack {
 		main_qu.pop();
 	}
 	
-	public Object peek() {
+	public Node peek() {
 		return main_qu.peek();
 	}
 	
