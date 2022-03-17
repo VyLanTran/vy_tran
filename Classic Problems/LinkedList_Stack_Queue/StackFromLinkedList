@@ -1,3 +1,5 @@
+package LinkedList_Stack_Queue;
+
 public class StackFromLinkedList {
 	public Node top;
 	
@@ -5,10 +7,17 @@ public class StackFromLinkedList {
 		top = null;
 	}
 	
+	public void push(Node node) {
+		node.next = top;
+		top = node;
+	}
+	
 	public void push(Object value) {
-		Node new_node = new Node(value);
-		new_node.next = top;
-		top = new_node;
+		if (value instanceof Node == false) {
+			Node new_node = new Node(value);
+			new_node.next = top;
+			top = new_node;
+		}
 	}
 	
 	public void pop() {
@@ -18,8 +27,12 @@ public class StackFromLinkedList {
 		else top = top.next;
 	}
 	
-	public Object peek() {
-		return top.data;
+	public Node peek() {
+		return top;
+	}
+	
+	public boolean is_empty() {
+		return top == null;
 	}
 	
 	public String display() {
@@ -32,3 +45,4 @@ public class StackFromLinkedList {
 		return text;
 	}
 }
+
