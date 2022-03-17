@@ -1,3 +1,5 @@
+package Tree;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -10,9 +12,11 @@ public class Main {
 		tree1.root.right.left = new Node(6);
 		tree1.root.right.right = new Node(7);
 		
-		System.out.println("Pre-order traversal: " + tree1.preorderTraversal());
-		System.out.println("In-order traversal: " + tree1.inorderTraversal());
-		System.out.println("Post-order traversal: " + tree1.postorderTraversal());
+		System.out.println("Recursive pre-order traversal: " + tree1.recur_preorder_traversal());
+		System.out.println("Iterative pre-order traversal: " + tree1.iter_preorder_traversal());
+		System.out.println("Recursive in-order traversal: " + tree1.recur_inorder_traversal());
+		System.out.println("Iterative in-order traversal: " + tree1.iter_inorder_traversal());
+		System.out.println("Recursive post-order traversal: " + tree1.recur_postorder_traversal());
 
 		System.out.println("******************************************************");
 		
@@ -27,7 +31,7 @@ public class Main {
 		exp1.root.left.right.left = new Node(4);
 		exp1.root.left.right.right = new Node(3);
 		
-		System.out.println("Expression without parentheses: " + exp1.inorderTraversal());
+		System.out.println("Expression without parentheses: " + exp1.recur_inorder_traversal());
 		System.out.println("Expression parentheses: " + exp1.inorderTraversalParentheses());
 			
 		System.out.println(exp1.inorderTraversalParentheses() + " = " + exp1.evaluateExp());
@@ -73,7 +77,6 @@ public class Main {
 		
 //		System.out.println(tree3.isComplete());
 		System.out.println("******************************************************");
-		
 		
 	}
 
