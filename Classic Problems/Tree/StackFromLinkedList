@@ -1,0 +1,47 @@
+package Tree;
+
+public class StackFromLinkedList {
+	public Node top;
+	
+	public StackFromLinkedList() {
+		top = null;
+	}
+	
+	public void push(Node node) {
+		node.next = top;
+		top = node;
+	}
+	
+	public void push(Object value) {
+		if (value instanceof Node == false) {
+			Node new_node = new Node(value);
+			new_node.next = top;
+			top = new_node;
+		}
+	}
+	
+	public void pop() {
+		if (top == null) {
+			return;
+		}
+		else top = top.next;
+	}
+	
+	public Node peek() {
+		return top;
+	}
+	
+	public boolean is_empty() {
+		return top == null;
+	}
+	
+	public String display() {
+		String text = "";
+		Node cur = top;
+		while (cur != null) {
+			text += cur.data + "\s";
+			cur = cur.next;
+		}
+		return text;
+	}
+}
