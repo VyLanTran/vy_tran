@@ -1,37 +1,55 @@
+package LinkedList_Stack_Queue;
+
 public class QueueFromLinkedList {
 
-	Node top, bottom;
+	Node front;
+	Node back;
 	
 	public QueueFromLinkedList() {
-		top = null;
-		bottom = null;
+		front = null;
+		back = null;
+	}
+	
+	public void enqueue(Node node) {
+		if (front == null) {
+			front = node;
+			back = node;
+		}
+		else {
+			back.next = node;
+			back = node;
+		}
 	}
 	
 	public void enqueue(Object value) {
 		Node new_node = new Node(value);
-		if (top == null) {
-			top = new_node;
-			bottom = new_node;
+		if (front == null) {
+			front = new_node;
+			back = new_node;
 		}
 		else {
-			bottom.next = new_node;
-			bottom = new_node;
+			back.next = new_node;
+			back = new_node;
 		}
 	}
 	
 	public void dequeue() {
-		if (top == null) return;
-		top = top.next;
-		if (top == null) bottom = null;
+		if (front == null) return;
+		front = front.next;
+		if (front == null) back = null;
 	}
 	
-	public Object peek() {
-		return top.data;
+	public Node peek() {
+		return front;
+	}
+	
+	public boolean is_empty() {
+		return front == null;
 	}
 	
 	public String display() {
 		String text = "";
-		Node cur = top;
+		Node cur = front;
 		while (cur != null) {
 			text += cur.data + "\s";
 			cur = cur.next;
