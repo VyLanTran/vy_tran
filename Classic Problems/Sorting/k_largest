@@ -1,0 +1,47 @@
+package HW4;
+
+import java.util.Random;
+
+public class Problem4Test {
+
+	public static void main(String[] args) {
+		Random rand = new Random();
+		int[] numbers = new int[10];
+		for (int i = 0; i < 10; i++) {
+			numbers[i] = rand.nextInt(0, 100);
+		}
+		int k = 4;
+		Problem4 p = new Problem4();
+		System.out.println("List: " + display(numbers));
+		System.out.println(k + " largest numbers are: " + display(p.k_largest(numbers, k)));
+	}
+	
+	public static String display(int[] arr) {
+		String s = "";
+		for (int i = 0; i < arr.length; i++) {
+			s += arr[i] + "\s";
+		}
+		return s;
+	}
+
+}
+
+class Problem4 {
+	// return k largest elements
+	// use bubble sort k times -> O(kN)
+	public int[] k_largest(int[] numbers, int k) {
+		int[] arr = new int[k];
+		for (int i = 0; i < k; i++) {
+			for (int j = 0; j < numbers.length - 1; j++) {
+				if (numbers[j] > numbers[j + 1]) {
+					int temp = numbers[j];
+					numbers[j] = numbers[j + 1];
+					numbers[j + 1] = temp;
+				}
+			}
+			arr[k - 1 - i] = numbers[numbers.length - 1 - i];
+		}
+		
+		return arr;
+	}
+}
