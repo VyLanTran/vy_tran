@@ -1,0 +1,49 @@
+package HW4;
+
+public class Problem4Test {
+
+	public static void main(String[] args) {
+		int[] arr = new int[]{4, 5, 6, 7, 0, 1, 2, 3};
+		int value = 4;
+		Solution4  s = new Solution4();
+		System.out.println(s.find_method_1(arr, value));
+		System.out.println(s.find_method_2(arr, value));
+	}
+
+}
+
+class Solution4 {
+	// FIND INDEX OF A VALUE IN AN UNSORTED ARRAY
+	
+	// 1. Compare each element with the target value
+	public int find_method_1(int[] arr, int value) {
+		// 1 comparison for each iteration to ensure i doesn't run out of bounds --> worst case: O(N+1)
+		for (int i = 0; i < arr.length; i++) {
+			// 1 comparison with value for each iteration --> O(N)
+			if (arr[i] == value) return i;
+		}
+		return -1;
+		// total: worst case --> O(2N+1)
+	}
+	
+	
+	// 2. GeeksForGeek
+	public int find_method_2(int[] arr, int value) {
+		// 1 comparison here --> O(1)
+		if (arr[arr.length - 1] == value) return arr.length - 1;
+		int last = arr[arr.length - 1];
+		arr[arr.length - 1] = value;
+		// no comparisons are made here because i just increments without limit
+		for (int i = 0;;i++) {
+			// 1 comparison for each iteration --> worst case: O(N)
+			if (arr[i] == value) {
+				// retrieve the original array
+				arr[arr.length - 1] = last;
+				// 1 comparison here no matter the value is found or not --> O(1)
+				if (i < arr.length - 1) return i;
+				else return -1;
+			}
+		}
+		// total: worst case --> O(N+2)
+	}
+}
