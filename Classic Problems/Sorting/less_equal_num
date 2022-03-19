@@ -13,6 +13,7 @@ public class Problem3Test {
 }
 
 class Solution3 {
+	// Find the number of elements less than or equal to a value
 	public int num_less_equal(int[] numbers, int value) {
 		int index = binary_search(numbers, value);
 		return index + 1;
