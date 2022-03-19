@@ -1,0 +1,203 @@
+package Sorting;
+
+import java.util.Random;
+
+public class Main {
+
+	public static void main(String[] args) {
+		List s = new List(10);
+		System.out.println("Before sorting: " + s.display());
+		s.selection_sort();
+		s.insertion_sort();
+		s.merge_sort();
+		s.quicksort();
+		System.out.println("After sorting: " + s.display());
+		
+//		List s = new List(new int[] {3, 6, 7, 10, 23, 29, 40});
+//		System.out.println("List: " + s.display());
+//		int index = s.binary_search(23);
+//		System.out.println("23 is at index: " + index);
+	}
+
+}
+
+
+class List {
+	
+	public int size;
+	public int[] numbers;
+	Random rand = new Random();
+	
+	public List(int size) {
+		this.size = size;
+		numbers = new int[size];
+		generate_array();
+	}
+	
+	public List(int[] numbers) {
+		this.numbers = numbers;
+	}
+	
+	public void generate_array() {
+		for (int i = 0; i < size; i++) {
+			numbers[i] = rand.nextInt(0, 100);
+		}
+	}
+	
+	public String display() {
+		String s = "";
+		for (int i = 0; i < size; i++) {
+			s += numbers[i] + "\s";
+		}
+		return s;
+	}
+	
+	// index of smallest number from start to end-1
+	public int smallest_index(int start, int end) {
+		int s_idx = start;
+		for (int i = start; i < end; i++) {
+			if (numbers[i] < numbers[s_idx]) {
+				s_idx = i;
+			}
+		}
+		return s_idx;
+	}
+	
+	// swap number at index a and number at index b
+	public void swap(int a, int b) {
+		int temp = numbers[a];
+		numbers[a] = numbers[b];
+		numbers[b] = temp;
+	}
+	
+	
+	// SELECTION SORT
+	public void selection_sort() {
+		for (int i = 0; i < numbers.length; i++) {
+			int smallest_idx = smallest_index(i, numbers.length);
+			swap(i, smallest_idx);
+		}
+	}
+	
+	
+	// INSERTION SORT
+	public void insertion_sort() {
+		for (int i = 1; i < numbers.length; i++) {
+			int j = i;
+			while (j > 0 && numbers[j] < numbers[j-1]) {
+				swap(j-1, j);
+				j--;
+			}
+		}
+	}
+	
+	// MERGE SORT
+	public void merge_sort() {
+		partition(numbers, 0, size - 1);
+	}
+	
+	public void partition(int[] numbers, int first, int last) {
+		if (first < last) {
+			int mid = (first + last) / 2;
+			partition(numbers, first, mid);
+			partition(numbers, mid + 1, last);
+			merge(numbers, first, mid, last);
+		}
+	}
+	
+	public void merge(int[] numbers, int left_first, int left_last, int right_last) {
+		int merged_size = right_last - left_first + 1;
+		int pos = 0;
+		int left = left_first;
+		int right = left_last + 1;
+		int[] merged_numbers = new int[merged_size];
+		
+		while (left <= left_last && right <= right_last) {
+			if (numbers[left] <= numbers[right]) {
+				merged_numbers[pos] = numbers[left];
+				left += 1;
+			}
+			else {
+				merged_numbers[pos] = numbers[right];
+				right += 1;
+			}
+			pos += 1;
+		}
+		
+		while (left <= left_last) {
+			merged_numbers[pos] = numbers[left];
+			left += 1;
+			pos += 1;
+		}
+		
+		while (right <= right_last) {
+			merged_numbers[pos] = numbers[right];
+			right += 1;
+			pos += 1;
+		}
+		
+		// copy merged_numbers back to numbers
+		for (pos = 0; pos < merged_size; pos++) {
+			numbers[left_first + pos] = merged_numbers[pos];
+		}
+	}
+	
+	//QUICKSORT
+	public void quicksort() {
+		quicksort(numbers, 0, numbers.length - 1);
+	}
+	
+	public void quicksort(int[] numbers, int start, int end) {
+		if (start >= end) return;
+		
+		// high is the last number of the left part
+		int high = quicksort_partition(numbers, start, end);
+		// recursive call on the left part
+		quicksort(numbers, start, high);
+		// recursive call on the right part
+		quicksort(numbers, high + 1, end);
+	}
+	
+	public int quicksort_partition(int[] numbers, int start, int end) {
+		int mid = start + (end - start) / 2;
+		int pivot = numbers[mid];
+		int low = start;
+		int high = end;
+		
+		while (true) {
+			while (numbers[low] < pivot) {
+				low += 1;
+			}
+			while (numbers[high] > pivot) {
+				high -= 1;
+			}
+			if (low >= high) break;
+			
+			int temp = numbers[low];
+			numbers[low] = numbers[high];
+			numbers[high] = temp;
+			low += 1;
+			high -= 1;
+		}
+		// high is the last index of the left part
+		return high;
+	}
+	
+	// BINARY SEARCH
+	public int binary_search(int value) {
+		return binary_search(numbers, value, 0, numbers.length - 1);
+	}
+	
+	public int binary_search(int[] numbers, int value, int start, int end) {
+		if (start > end) return -1;
+		
+		int mid = start + (end - start) / 2;
+		if (value == numbers[mid]) return mid;
+		else if (value < numbers[mid]) {
+			return binary_search(numbers, value, start, mid - 1);
+		}
+		else {
+			return binary_search(numbers, value, mid + 1, end);
+		}
+	}
+}
