@@ -1,0 +1,80 @@
+package HW4;
+
+public class MinIntHeap {
+	
+	int capacity = 10;
+	int size;
+	int[] items;
+	
+	public MinIntHeap(int[] items) {
+		size = items.length;
+		this.items = items;
+	}
+	
+	private int get_left_child_index(int parent_index) {
+		return parent_index * 2 + 1;
+	}
+	private int get_right_child_index(int parent_index) {
+		return parent_index * 2 + 2;
+	}
+	private int get_parent_index(int child_index) {
+		return (child_index - 1) / 2;
+	}
+	private boolean has_left_child(int index) {
+		return get_left_child_index(index) < size;
+	}
+	private boolean has_right_child(int index) {
+		return get_right_child_index(index) < size;
+	}
+	private boolean has_parent(int index) {
+		return get_parent_index(index) >= 0;
+	}
+	private int get_left_child(int index) {	
+		return items[get_left_child_index(index)];
+	}
+	private int get_right_child(int index) {
+		return items[get_right_child_index(index)];
+	}
+	private int get_parent(int index) {
+		return items[get_parent_index(index)];
+	}
+	
+	private void swap(int index1, int index2) {
+		int temp = items[index1];
+		items[index1] = items[index2];
+		items[index2] = temp;
+	}
+
+	public int peek() {
+		// just return the top element (which is the min) but does not remove it from heap
+		if (size == 0) throw new IllegalStateException();
+		return items[0];
+	}
+	
+	public int poll() {
+		// remove and return the top element
+		if (size == 0) throw new IllegalStateException();
+		int item = items[0];
+		items[0] = items[size - 1];
+		size --;
+		heapify_down(0);
+		return item;
+	}
+	
+	public void heapify_down(int index) {
+		while(has_left_child(index)) {
+			int smaller_child_index = get_left_child_index(index);
+			if (has_right_child(index) && 
+				get_right_child(index) < get_left_child(index)) {
+				smaller_child_index = get_right_child_index(index);
+			}
+			if (items[index] < items[smaller_child_index]) break;
+			else {
+				swap(index, smaller_child_index);
+			}
+			index = smaller_child_index;
+		}
+	}
+
+}
+
