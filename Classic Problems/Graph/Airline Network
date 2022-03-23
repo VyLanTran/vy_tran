@@ -1,0 +1,166 @@
+package Airline_Network;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class Graph {
+	ArrayList<Airport> network;
+	
+	public Graph() {
+		network = new ArrayList<Airport>();
+	}
+	
+	public void add_edge(Airport u, Airport v) {
+		if (!network.contains(u)) network.add(u);
+		int u_index = network.indexOf(u);
+		network.get(u_index).neighbors.add(v);
+		
+		if (!network.contains(v)) network.add(v);
+		int v_index = network.indexOf(v);
+		network.get(v_index).neighbors.add(u);
+	}
+	
+	public boolean path_exists(Airport from, Airport to) {
+		HashMap<Airport, Boolean> visited = new HashMap<Airport, Boolean>();
+		for (Airport airport : network) {
+			visited.put(airport, false);
+		}
+		Queue queue = new Queue();
+		queue.enqueue(from);
+		visited.put(from, true);
+		
+		while (!queue.is_empty()) {
+			Airport front = queue.peek();
+			queue.dequeue();
+			if (front == to) return true;
+			
+			for (Airport neighbor : front.neighbors) {
+				if (!visited.get(neighbor)) {
+					visited.put(neighbor, true);
+					queue.enqueue(neighbor);
+				}
+			}
+		}
+		return false;
+	}
+	
+	public void num_stops(Airport source) {
+		HashMap<Airport, Boolean> visited = new HashMap<Airport, Boolean>();
+		for (Airport airport : network) {
+			visited.put(airport, false);
+		}
+		Queue queue = new Queue();
+		source.stops = 0;
+		source.path.add(source.name);
+		queue.enqueue(source);
+		visited.put(source, true);
+		
+		while (!queue.is_empty()) {
+			Airport front = queue.peek();
+			System.out.println(source.name + " -> " + front.name + ": " + front.stops + " stops\t" + front.path);
+//			System.out.println(front.path);
+			queue.dequeue();
+			for (Airport neighbor : front.neighbors) {
+				if (!visited.get(neighbor)) {
+					visited.put(neighbor, true);
+					neighbor.stops = front.stops + 1;
+					neighbor.path.addAll(front.path);
+					neighbor.path.add(neighbor.name);
+					queue.enqueue(neighbor);
+				}
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		Graph g = new Graph();
+		Airport btv = new Airport("BTV");
+		Airport jfk = new Airport("JFK");
+		Airport hnl = new Airport("HNL");
+		Airport sfo = new Airport("SFO");
+		Airport lax = new Airport("LAX");
+		Airport ord = new Airport("ORD");
+		Airport dfw = new Airport("DFW");
+		Airport pvd = new Airport("PVD");
+		Airport lga = new Airport("LGA");
+		Airport mia = new Airport("MIA");
+		
+		g.add_edge(btv, jfk);
+		g.add_edge(hnl, lax);
+		g.add_edge(lax, sfo);
+		g.add_edge(sfo, ord);
+		g.add_edge(lax, ord);
+		g.add_edge(lax, dfw);
+		g.add_edge(ord, dfw);
+		g.add_edge(ord, pvd);
+		g.add_edge(dfw, lga);
+		g.add_edge(dfw, mia);
+		g.add_edge(pvd, lga);
+		g.add_edge(lga, mia);
+		
+		System.out.println("PVD to HNL: " + g.path_exists(pvd, hnl));
+		System.out.println("PVD to JFK: " + g.path_exists(pvd, jfk));
+		
+		g.num_stops(hnl);
+	}
+
+}
+
+class Airport {
+	String name;
+	ArrayList<Airport> neighbors;
+	Airport next;
+	int stops;
+	ArrayList<String> path;
+	
+	public Airport(String name) {
+		this.name = name;
+		neighbors = new ArrayList<Airport>();
+		next = null;
+		stops = -1;
+		path = new ArrayList<String>();
+	}
+}
+
+class Queue {
+	Airport front;
+	Airport rear;
+	
+	public Queue() {
+		front = null;
+		rear = null;
+	}
+	
+	public boolean is_empty() {
+		return front == null;
+	}
+	
+	public void enqueue(Airport airport) {
+		if (is_empty()) {
+			front = airport;
+			rear = airport;
+		}
+		else {
+			rear.next = airport;
+			rear = airport;
+		}
+	}
+	
+	public void dequeue() {
+		if (is_empty()) {
+			return;
+		}
+		if (front == rear) {
+			front = null;
+			rear = null;
+		}
+		else {
+			front = front.next;
+		}
+	}
+	
+	public Airport peek() {
+		if (is_empty()) return null;
+		return front;
+	}
+}
