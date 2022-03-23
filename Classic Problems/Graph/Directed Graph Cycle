@@ -1,0 +1,101 @@
+package HW5;
+
+import java.util.ArrayList;
+
+public class DirectedGraph {
+	int N;	// No. vertices
+	ArrayList<Integer>[] adj_vertices;
+	
+	@SuppressWarnings("unchecked")
+	public DirectedGraph(int N) {
+		this.N = N;
+		adj_vertices = new ArrayList[N];
+		for (int i = 0; i < N; i++) {
+			adj_vertices[i] = new ArrayList<Integer>();
+		}
+	}
+	
+	public void add_edge(int u, int v) {
+		adj_vertices[u].add(v);
+	}
+	
+	public boolean has_cycle() {
+		// if at least one of the vertices is the root of a graph containing cycle, return true
+		for (int i = 0; i < N; i++) {
+			if (has_cycle_from(i, new boolean[N]))
+				return true;
+		}
+		return false;
+
+	}
+	
+	public boolean has_cycle_from(int origin, boolean[] visited) {
+		// visited has up to N spaces, in case there's a vertex that connects to all other vertices 
+		if (visited[origin]) 
+			return true;
+		visited[origin] = true;
+		for (int child : adj_vertices[origin]) {
+			// if at least one of the children is the root of a graph containing cycle, return true
+			if (has_cycle_from(child, visited))
+				return true;
+		}
+		visited[origin] = false;
+		return false;
+	}
+
+	public static void main(String[] args) {
+		DirectedGraph g = new DirectedGraph(4);
+		g.add_edge(0, 1);
+		g.add_edge(0, 2);
+		g.add_edge(1, 2);
+		g.add_edge(2, 0);
+		g.add_edge(2, 3);
+		g.add_edge(3, 3);
+		
+//		g.add_edge(0, 1);
+//		g.add_edge(0, 2);
+//		g.add_edge(1, 2);
+//		g.add_edge(2, 3);
+		
+		System.out.println(g.has_cycle());
+	}
+
+}
+
+class Node {
+	int data;
+	Node next; 
+	
+	public Node(int data) {
+		this.data = data;
+		next = null;
+	}
+}
+
+class Stack {
+	Node top;
+	
+	public Stack() {
+		top = null;
+	}
+	
+	public boolean is_empty() {
+		return top == null;
+	}
+ 	
+	public void push(int value) {
+		Node new_node = new Node(value);
+		new_node.next = top;
+		top = new_node;
+	}
+	
+	public void pop() {
+		if (is_empty()) return;
+		top = top.next;
+	}
+	
+	public Node peek() {
+		if (is_empty()) return null;
+		return top;
+	}
+}
