@@ -1,0 +1,67 @@
+package HW5;
+
+import java.util.ArrayList;
+
+public class UndirectedGraph {
+	// Using Array of ArrayLists of Integers
+	int V;	//No. of vertices
+	ArrayList<Integer>[] adj_vertices;
+	
+	@SuppressWarnings("unchecked")
+	public UndirectedGraph(int V) {
+		this.V = V;
+		adj_vertices = new ArrayList[V];
+		for (int i = 0; i < V; i++) {
+			adj_vertices[i] = new ArrayList<Integer>();
+		}
+	}
+	
+	public void add_edge(int u, int v) {
+		adj_vertices[u].add(v);
+		adj_vertices[v].add(u);
+	}
+	
+	public boolean has_cycle() {
+		boolean[] visited = new boolean[V];
+		for (int i = 0; i < V; i++) {
+			if (!visited[i]) {
+				if (has_cycle_from(i, V, visited)) 
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean has_cycle_from(int origin, int parent, boolean[] visited) {
+		visited[origin] = true;
+		for (int neighbor : adj_vertices[origin]) {
+			if (visited[neighbor] && neighbor != parent) 
+				return true;
+			else if (!visited[neighbor]) {
+				// repeat the whole process with each of its neighbor
+				// if one of its neighbors is the root of a cycle, return true
+				if (has_cycle_from(neighbor, origin, visited))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public static void main(String[] args) {
+		UndirectedGraph g1 = new UndirectedGraph(4);
+		g1.add_edge(0, 1);
+		g1.add_edge(1, 2);
+		g1.add_edge(2, 3);
+//		g1.add_edge(3, 3);
+		System.out.println(g1.has_cycle());
+		
+		UndirectedGraph g2 = new UndirectedGraph(5);
+		g2.add_edge(0, 1);
+		g2.add_edge(0, 2);
+		g2.add_edge(2, 3);
+		g2.add_edge(2, 4);
+		g2.add_edge(4, 3);
+		System.out.println(g2.has_cycle());
+	}
+
+}
